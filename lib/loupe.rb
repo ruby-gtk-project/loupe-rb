@@ -1,3 +1,15 @@
 # frozen_string_literal: true
 
+require_relative "loupe/about"
 require_relative "loupe/application"
+require_relative "loupe/config"
+require_relative "loupe/drag_overlay"
+require_relative "loupe/error_details"
+require_relative "loupe/file_model"
+require_relative "loupe/settings"
+require_relative "loupe/shortcuts_dialog"
+require_relative "loupe/style"
+require_relative "loupe/util"
+require_relative "loupe/util/gettext"
+require_relative "loupe/util/root"
+require_relative "loupe/window"
