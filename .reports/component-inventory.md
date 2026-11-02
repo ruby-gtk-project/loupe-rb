@@ -14,22 +14,28 @@ directory; those halves are unioned into one port component below.
 
 | | upstream | `ruby` branch |
 |---|---:|---:|
-| Source files contributing UI | 42 `.rs` + 11 `.ui` | 2 `.rb` |
-| Template roots (components) | 12 `<template>` + 1 standalone `<object>` | 0 |
+| Source files contributing UI | 42 `.rs` + 11 `.ui` | 13 `.rb` |
+| Template roots (components) | 12 `<template>` + 1 standalone `<object>` | 6 ported |
 | Menu models | 3 (`primary_menu`, `image_menu`, `aspect_ratio_menu`) | 0 |
-| Action groups | `app.`, `win.`, `properties.`, `print.`, `edit.`, `edit-crop.` | 0 |
-| Distinct actions | 46 | 0 |
-| GSettings keys | 1 (`show-properties`) | 0 |
-| Stylesheets | 3 (`style.css`, `edit.css`, `edit_crop.css`), 38 rules | 0 |
+| Action groups | `app.`, `win.`, `properties.`, `print.`, `edit.`, `edit-crop.` | `app.`, `win.` (partial) |
+| Distinct actions | 46 | 7 (`app.help`, `app.quit`, `app.new-window`, `app.shortcuts`, `app.about`, `win.show-error`, `win.show-loader-error`) |
+| GSettings keys | 1 (`show-properties`) | 1 |
+| Stylesheets | 3 (`style.css`, `edit.css`, `edit_crop.css`), 38 rules | 3, loaded via `lib/loupe/style.rb` |
+| Custom symbolic icons | 22 | 22, under `data/resources/icons/hicolor` |
 | Translations | 58 locales in `po/`, 24 in `help/` | 0 |
 
-The `ruby` branch holds `lib/loupe.rb` and `lib/loupe/application.rb`, and
-`application.rb` is the scaffold stub: a `Gtk::Application`, an
-`Adwaita::ApplicationWindow` 800×600 titled "loupe", an `Adwaita::ToolbarView`
-with a bare `Adwaita::HeaderBar`, and an `Adwaita::StatusPage` reading "The Ruby
-port has not been written yet." **No upstream component is ported.** Every row
-below is `present: no`; `application.rb` exists as a file but holds none of the
-upstream application component.
+State of the `ruby` branch as of the last commit: the support layer, the window
+shell and the three standalone dialogs are ported. Present are
+`lib/loupe/application.rb`, `window.rb`, `about.rb`, `shortcuts_dialog.rb`,
+`error_details.rb`, `drag_overlay.rb`, and the non-widget support files
+`config.rb`, `settings.rb`, `style.rb`, `file_model.rb`, `util.rb`,
+`util/gettext.rb` and `util/root.rb`.
+
+**What is left is the whole viewer and the whole editor**: `image_window` with
+its 46-action set and its OSD, `image_view`, `sliding_view`, `image_page`, the
+`image` widget and its 12 impl files, `properties_view`, `shy_bin`, `print`,
+`print_preview`, `edit_window`, `edit_crop` and `edit_crop_selection`, plus the
+`decoder`, `editing` and `metadata` support units and all translations.
 
 Port paths follow the existing gem layout on `ruby` (`lib/loupe/<thing>.rb`),
 not the pilot's flat `lib/<thing>.rb` — `lib/loupe.rb` and
@@ -54,7 +60,11 @@ to <Ctrl>? in `window.rs`, but it is **installed nowhere in the Rust source** �
 the shortcuts dialog is a resource-only component (below), so the port must
 install `app.shortcuts` itself.
 
-Present: no (stub file of the same name exists).
+Present: **yes** — `lib/loupe/application.rb`. The scaffold stub is gone; the
+file now holds the `Adwaita::Application`, the forced dark colour scheme, the
+window icon and five actions with accelerators (`app.help`, `app.quit`,
+`app.new-window`, plus `app.shortcuts` and `app.about`, which upstream installs
+nowhere).
 
 ### src/widgets/window.rs + src/widgets/window.ui → `lib/loupe/window.rb` — the window
 
@@ -80,7 +90,11 @@ and `show_error(stub, details, type)` which builds an `Adw.Toast` with
 priority High and a "Show Details" button targeting `win.show-error` or
 `win.show-loader-error`.
 
-Present: no.
+Present: **yes** — `lib/loupe/window.rb`. The toast overlay, the view stack
+with its viewer and lazy editor pages, the two breakpoints, the four layout
+properties, `show_toast` / `show_error`, and `win.show-error` /
+`win.show-loader-error`. The two stack children are still placeholders until
+`image_window.rb` and `edit_window.rb` land.
 
 ### src/widgets/image_window.ui (menu `primary_menu`) → part of `lib/loupe/image_window.rb` — main menu
 
@@ -293,7 +307,7 @@ Present: no.
 bound `Gtk.DropTarget`'s `current-drop` notify. Properties: `content`,
 `drop-target` (construct-only).
 
-Present: no.
+Present: **yes** — `lib/loupe/drag_overlay.rb`.
 
 ### src/widgets/shy_bin.rs → `lib/loupe/shy_bin.rb` — header-bar bin
 
@@ -317,7 +331,7 @@ Present: no.
 | `Gtk.TextView` (`message`) | 1 | `error-message`, `monospace` | — | non-editable, word-char wrap |
 | `Gtk.Button` (`report`) + `Adw.ButtonContent` | 1 each | `suggested-action`, `pill` | `clicked` → `Gtk.UriLauncher` | "Report _Issue", `external-link-symbolic`; URI differs for loader vs general errors |
 
-Present: no.
+Present: **yes** — `lib/loupe/error_details.rb`.
 
 ### data/resources/shortcuts-dialog.ui → `lib/loupe/shortcuts_dialog.rb` — keyboard shortcuts dialog
 
@@ -336,7 +350,7 @@ it is loaded from GResource by `app.shortcuts`, which the port must install.
 
 Every item string carries the `shortcut window` msgctxt.
 
-Present: no.
+Present: **yes** — `lib/loupe/shortcuts_dialog.rb`.
 
 ### src/about.rs → `lib/loupe/about.rb` — about dialog
 
@@ -347,7 +361,7 @@ apps.gnome.org/Loupe/, issue and support URLs, 2 developers, 3 designers,
 assembled from the version, app id, sandbox state and `/etc/os-release` (read
 through `/run/host/etc` when sandboxed). Presented by `win.about`.
 
-Present: no.
+Present: **yes** — `lib/loupe/about.rb`.
 
 ### src/widgets/print.rs + .ui → `lib/loupe/print.rb` — print window
 
@@ -478,17 +492,17 @@ Present: no.
 
 | Upstream | Port path | Kind | Present |
 |---|---|---|---|
-| `src/lib.rs`, `src/main.rs` | `lib/loupe.rb`, `exe/loupe` | entry point: gettext bind, resource register, run | partial (`lib/loupe.rb` exists, requires only `application`) |
-| `src/config.rs` | `lib/loupe/config.rb` | app id, version, localedir | no |
-| `data/org.gnome.Loupe.gschema.xml.in` | `lib/loupe/settings.rb` | GSettings: one key, `show-properties` (b, false) | no |
-| `src/file_model.rs` | `lib/loupe/file_model.rb` | the image list, Nautilus sort order, directory enumeration | no |
+| `src/lib.rs`, `src/main.rs` | `lib/loupe.rb`, `exe/loupe` | entry point: gettext bind, resource register, run | yes (`lib/loupe.rb` requires all 13 siblings) |
+| `src/config.rs` | `lib/loupe/config.rb` | app id, version, localedir | yes (reads the three names from the environment) |
+| `data/org.gnome.Loupe.gschema.xml.in` | `lib/loupe/settings.rb` | GSettings: one key, `show-properties` (b, false) | yes (JSON file under the user config dir, no compiled schema needed) |
+| `src/file_model.rs` | `lib/loupe/file_model.rb` | the image list, Nautilus sort order, directory enumeration | yes |
 | `src/metadata.rs`, `src/metadata/file.rs` | `lib/loupe/metadata.rb`, `lib/loupe/metadata/file.rb` | EXIF / XMP / ICC / CICP feed for the properties view | no |
 | `src/decoder.rs`, `decoder/formats.rs`, `formats/glycin_proxy.rs`, `formats/svg.rs`, `decoder/tiling.rs` | `lib/loupe/decoder*.rb` | glycin-backed loading and tiling | no |
 | `src/editing.rs`, `src/editing/preview.rs` | `lib/loupe/editing.rb`, `lib/loupe/editing/preview.rb` | the edit operation queue and its preview | no |
-| `src/util.rs`, `util/gettext.rs`, `util/root.rs` | `lib/loupe/util.rb` + siblings | `Direction`, `Position`, `ErrorType`, `gettext_f`, `ParentWindow` | no |
+| `src/util.rs`, `util/gettext.rs`, `util/root.rs` | `lib/loupe/util.rb` + siblings | `Direction`, `Position`, `ErrorType`, `gettext_f`, `ParentWindow` | yes |
 | `src/widgets.rs`, `src/widgets/edit.rs` | — | Rust module re-exports; no port file needed | n/a |
-| `data/resources/style.css`, `edit.css`, `edit_crop.css` | `lib/loupe/style.rb` + 3 css files | 38 rules; the port must load them through a `Gtk::CssProvider` | no |
-| `data/resources/icons/scalable/actions/*.svg` (22) | app resource dir | custom symbolic icons the UI names directly (`apply-crop`, `aspect-ratio-*`, `check-plain`, `crop`, `edit-mirror-*`, `external-link`, `image-round`, `info-outline`, `minus-large`, `page-orientation-*`, `plus-large`, `zoom-toggle`) | no |
+| `data/resources/style.css`, `edit.css`, `edit_crop.css` | `lib/loupe/style.rb` + 3 css files | 38 rules, loaded through a `Gtk::CssProvider` | yes |
+| `data/resources/icons/scalable/actions/*.svg` (22) | `data/resources/icons/hicolor/scalable/actions/` | custom symbolic icons the UI names directly (`apply-crop`, `aspect-ratio-*`, `check-plain`, `crop`, `edit-mirror-*`, `external-link`, `image-round`, `info-outline`, `minus-large`, `page-orientation-*`, `plus-large`, `zoom-toggle`) | yes (copied; registered by `style.rb` as an icon-theme search path) |
 | `data/icons/hicolor/**`, `org.gnome.Loupe.Source.svg` | app icons | app icon, devel icon, symbolic | no |
 | `data/org.gnome.Loupe.desktop.in.in` | desktop file | 41 MIME types | no |
 | `data/org.gnome.Loupe.metainfo.xml.in.in` | appstream | | no |
@@ -496,7 +510,8 @@ Present: no.
 
 ## Notes for whoever ports next
 
-- **Nothing is ported.** `lib/loupe/application.rb` is the scaffold; it holds a status page, not the application component. The first unit to take is `src/application.rs` + `src/widgets/window.rs` + `src/widgets/window.ui` together, because `LpWindow`'s four layout properties are what every other template looks up.
+- **Done so far**: the support layer, `application.rb`, `window.rb`, and the three standalone dialogs (`about`, `shortcuts_dialog`, `error_details`) plus `drag_overlay`. `window.rb`'s four layout properties are in place, which is what every remaining template looks up through `<lookup>`.
+- **Next unit**: `src/widgets/image_window.rs` + `.ui` + `image_window/actions.rs` + `image_window/controls.rs` → `lib/loupe/image_window.rb` and siblings. It is the view-stack child `window.rb` currently stubs, and it owns the primary menu and the bulk of the 46 actions.
 - **The `.ui` files are the better spec** for 12 of the 13 components, but three things live only in Rust and are easy to lose: the 46-action table with its accelerators (`image_window/actions.rs`, `window.rs`, `application.rs`), the seven runtime dialogs and eleven toasts, and the OSD auto-hide animation.
 - **`app.shortcuts` is installed nowhere upstream** — the dialog is a GResource-only component. The port has to add the action.
 - **Three components have no declarative half at all** (`LpImage` and its 12 impl files, `LpSlidingView`, `LpShyBin`, `LpPrintPreview`) and are custom `measure`/`size_allocate`/`snapshot` widgets. They are the hard part of this port, not the dialogs.
