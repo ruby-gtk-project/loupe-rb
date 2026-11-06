@@ -96,6 +96,27 @@ Gem::Specification.new do |spec|
   spec.executables = ["loupe"]
   spec.require_paths = ["lib"]
 
+  # Runtime dependencies. This gemspec had none at all, which meant
+  # `gem install` produced something that could not load its own toolkit.
+  spec.add_dependency("gtk4", "~> 4.3")
+  spec.add_dependency("adwaita", "~> 4.3")
+  spec.add_dependency("glib2", "~> 4.3")
+
+  # Upstream's AppStream dependency is build-tooling only (CI validates
+  # data/org.gnome.Loupe.metainfo.xml.in.in with appstream-util); Cargo.toml
+  # carries no appstream crate. The gem is wired in anyway, as this fork's
+  # binding-gem mandate requires, and is proved to load in flake.nix's
+  # typelib wiring and the gem-load check below; no component calls into it
+  # because upstream has no runtime use for it either.
+  spec.add_dependency("appstream", "~> 1.0")
+
+  # Upstream's metadata.rs (Metadata#gps_location_place) calls
+  # libgweather::Location::world to turn a photo's GPS EXIF coordinates into
+  # a "City, Country" string, falling back to the raw coordinates when no
+  # city is within 15km. lib/loupe/metadata.rb ports that with this gem
+  # rather than hand-rolling a location lookup.
+  spec.add_dependency("libgweather", "~> 1.0")
+
   # NOTE: It is preferable to list development dependencies in the gemspec due to increased
   #       visibility and discoverability.
   #       However, development dependencies in gemspec will install on
