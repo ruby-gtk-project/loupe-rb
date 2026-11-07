@@ -14,10 +14,12 @@
 #
 # This exercises every unit `.reports/component-parity.md` counts as built:
 # the window shell, the error-details dialog, the drag overlay, the about
-# dialog and the shortcuts window. It does not and cannot exercise the image
-# viewer, editor, crop tool, properties sidebar or print page, because none of
-# those have a port file yet (see that report) — there is nothing to drive.
+# dialog, the shortcuts window, the shy bin and the GdkPixbuf-backed decoder
+# model. It does not and cannot exercise the image viewer, editor, crop tool,
+# properties sidebar or print page, because none of those have a port file
+# yet (see that report) — there is nothing to drive.
 
+require "cairo"
 require "fileutils"
 require "tmpdir"
 
@@ -32,6 +34,19 @@ FileUtils.rm_rf(SHOTS)
 
 def png(path)
   File.binwrite(path, "\x89PNG\r\n\x1a\n")
+end
+
+# A real, decodable PNG (unlike `png` above, which only needs to pass the
+# directory enumerator's fast-content-type sniff) for driving Decoder, which
+# has to get all the way through GdkPixbuf.
+def real_png(path, width: 12, height: 8)
+  Cairo::ImageSurface.new(:argb32, width, height).tap do |surface|
+    Cairo::Context.new(surface).tap do |ctx|
+      ctx.set_source_rgb(0.2, 0.4, 0.8)
+      ctx.paint
+    end
+    surface.write_to_png(path)
+  end
 end
 
 # Turns the main loop over for `ms` milliseconds without sleeping the
@@ -346,6 +361,68 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
     d.check("far from any city, it falls back to degrees/minutes/seconds") do
       Loupe::Metadata::FileInfo.new(far).gps_location_place == "0° 0′ 00.00″ N\n0° 0′ 00.00″ E"
     end
+  end
+
+  d.step("ShyBin clamps its child's natural width to its minimum width") do
+    bin = Loupe::ShyBin.new
+    label = Gtk::Label.new("A very very very very very very long title")
+    label.ellipsize = :end
+    bin.child = label
+
+    label_measure = label.measure(:horizontal, -1)
+    bin_measure = bin.measure(:horizontal, -1)
+
+    d.check("the label itself actually has a shorter minimum than natural width") do
+      label_measure[0] < label_measure[1]
+    end
+    d.check("the bin's natural width equals its minimum width") { bin_measure[0] == bin_measure[1] }
+    d.check("the bin's minimum width still matches the label's") { bin_measure[0] == label_measure[0] }
+    d.check("vertical measurement is untouched (child's natural height passes through)") do
+      bin.measure(:vertical, -1) == label.measure(:vertical, -1)
+    end
+  end
+
+  d.step("Decoder decodes a real PNG through GdkPixbuf") do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "photo.png")
+      real_png(path, width: 37, height: 21)
+
+      decoder = Loupe::Decoder.load(Gio::File.new_for_path(path))
+
+      d.check("it loaded without error") { decoder.error.nil? }
+      d.check("it reports the real PNG MIME type") { decoder.mime_type == "image/png" }
+      d.check("it is not classified as SVG") { !decoder.svg? }
+      d.check("the decoded pixbuf keeps the source's dimensions") do
+        decoder.pixbuf.width == 37 && decoder.pixbuf.height == 21
+      end
+    end
+  end
+
+  d.step("Decoder classifies a missing file and an unrecognised format") do
+    Dir.mktmpdir do |dir|
+      missing = Gio::File.new_for_path(File.join(dir, "does-not-exist.png"))
+      missing_decoder = Loupe::Decoder.load(missing)
+
+      d.check("a missing file decodes to no pixbuf") { missing_decoder.pixbuf.nil? }
+      d.check("a missing file is classified as an image-source error") do
+        missing_decoder.error.image_source?
+      end
+
+      garbage_path = File.join(dir, "not-a-real-image.png")
+      File.write(garbage_path, "this is not image data")
+      garbage_decoder = Loupe::Decoder.load(Gio::File.new_for_path(garbage_path))
+
+      d.check("unreadable image data decodes to no pixbuf") { garbage_decoder.pixbuf.nil? }
+      d.check("unreadable image data is classified as an unsupported format") do
+        garbage_decoder.error.unsupported_format?
+      end
+    end
+  end
+
+  d.step("Decoder.svg? matches both SVG MIME variants Formats.svg? is for") do
+    d.check("plain SVG matches") { Loupe::Decoder::Formats.svg?("image/svg+xml") }
+    d.check("compressed SVG matches") { Loupe::Decoder::Formats.svg?("image/svg+xml-compressed") }
+    d.check("a raster type does not match") { !Loupe::Decoder::Formats.svg?("image/png") }
   end
 
   d.step("close the window so the run can finish") do
