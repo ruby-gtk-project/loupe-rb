@@ -1,0 +1,17 @@
+data/org.gnome.Loupe.desktop.in.in
+data/org.gnome.Loupe.metainfo.xml.in.in
+exe/loupe
+lib/loupe/about.rb
+lib/loupe/application.rb
+lib/loupe/config.rb
+lib/loupe/drag_overlay.rb
+lib/loupe/error_details.rb
+lib/loupe/file_model.rb
+lib/loupe/metadata/file.rb
+lib/loupe/settings.rb
+lib/loupe/shortcuts_dialog.rb
+lib/loupe/style.rb
+lib/loupe/util.rb
+lib/loupe/util/gettext.rb
+lib/loupe/util/root.rb
+lib/loupe/window.rb

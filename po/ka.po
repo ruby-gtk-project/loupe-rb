@@ -1,0 +1,1225 @@
+# Georgian translation for Loupe.
+# Copyright (C) 2023 Loupe's authors
+# This file is distributed under the same license as the Loupe package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023-2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Loupe main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/loupe/-/issues\n"
+"POT-Creation-Date: 2026-07-20 19:42+0000\n"
+"PO-Revision-Date: 2026-07-31 06:30+0200\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <ka@li.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+#: data/org.gnome.Loupe.desktop.in.in:2
+#: data/org.gnome.Loupe.metainfo.xml.in.in:6 src/about.rs:32
+#: src/widgets/image_window.rs:879
+msgid "Image Viewer"
+msgstr "სურათების გალერეა"
+
+#: data/org.gnome.Loupe.desktop.in.in:3
+#: data/org.gnome.Loupe.metainfo.xml.in.in:13
+msgid "View and edit images"
+msgstr "სურათების დათვალიერება და ჩასწორება"
+
+#: data/org.gnome.Loupe.desktop.in.in:11
+msgid "Picture;Graphics;Loupe;"
+msgstr "სურათი;გრაფიკა;ლუპა;"
+
+#: data/org.gnome.Loupe.gschema.xml.in:6
+msgid "Show the image properties sidebar"
+msgstr "გამოსახულების თვისებების გვერდითი პანელის ჩვენება"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: data/org.gnome.Loupe.metainfo.xml.in.in:8
+#: data/org.gnome.Loupe.metainfo.xml.in.in:10 src/about.rs:35
+msgid "The GNOME Project"
+msgstr "პროექტი \"GNOME\""
+
+#: data/org.gnome.Loupe.metainfo.xml.in.in:15
+msgid ""
+"Explore images, view their metadata, and make quick edits by cropping, "
+"rotating, or flipping them."
+msgstr ""
+"დაათვალიერეთ გამოსახულებები, იხილეთ მათი მეტამონაცემები და შეიტანეთ სწრაფი "
+"ცვლილებები მათი ამოჭრით, მობრუნებით ან გადაბრუნებით."
+
+#: data/org.gnome.Loupe.metainfo.xml.in.in:28
+msgid "Main Window"
+msgstr "მთავარი ფანჯარა"
+
+#: data/org.gnome.Loupe.metainfo.xml.in.in:32
+msgid "Crop Tool"
+msgstr "ამოჭრის ხელსაწყო"
+
+#: data/org.gnome.Loupe.metainfo.xml.in.in:36
+msgid "Image Properties Panel"
+msgstr "გამოსახულების თვისებების პანელი"
+
+#: data/resources/shortcuts-dialog.ui:6
+msgctxt "shortcut window"
+msgid "General Shortcuts"
+msgstr "საერთო მალსახმობები"
+
+#: data/resources/shortcuts-dialog.ui:9
+msgctxt "shortcut window"
+msgid "Copy Image or Selected Text to Clipboard"
+msgstr "გამოსახულების ან მონიშნული ტექსტის კოპირება ბუფერში"
+
+#: data/resources/shortcuts-dialog.ui:15
+msgctxt "shortcut window"
+msgid "Move Image to Trash"
+msgstr "გამოსახულების ნაგვის ყუთში გადატანა"
+
+#: data/resources/shortcuts-dialog.ui:21
+msgctxt "shortcut window"
+msgid "Permanently Delete Image"
+msgstr "გამოსახულების სამუდამოდ წაშლა"
+
+#: data/resources/shortcuts-dialog.ui:27
+msgctxt "shortcut window"
+msgid "Open Image with Other App"
+msgstr "გამოსახულების გახსნა სხვა აპით"
+
+#: data/resources/shortcuts-dialog.ui:33
+msgctxt "shortcut window"
+msgid "Set as Background"
+msgstr "ფონად დაყენება"
+
+#: data/resources/shortcuts-dialog.ui:39
+msgctxt "shortcut window"
+msgid "New Window"
+msgstr "ახალი ფანჯარა"
+
+#: data/resources/shortcuts-dialog.ui:45
+msgctxt "shortcut window"
+msgid "Open Help"
+msgstr "დახმარების მენიუ"
+
+#: data/resources/shortcuts-dialog.ui:51
+msgctxt "shortcut window"
+msgid "Show Keyboard Shortcuts"
+msgstr "კლავიატურის მალსახმობების ჩვენება"
+
+#: data/resources/shortcuts-dialog.ui:57
+msgctxt "shortcut window"
+msgid "Close Window"
+msgstr "ფანჯრის დახურვა"
+
+#: data/resources/shortcuts-dialog.ui:63
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "გამორთვა"
+
+#: data/resources/shortcuts-dialog.ui:71
+msgctxt "shortcut window"
+msgid "Navigate Images"
+msgstr "ნავიგაცია გამოსახულებებში"
+
+#: data/resources/shortcuts-dialog.ui:75 data/resources/shortcuts-dialog.ui:89
+msgctxt "shortcut window"
+msgid "Next Image"
+msgstr "შემდეგი გამოსახულება"
+
+#: data/resources/shortcuts-dialog.ui:82 data/resources/shortcuts-dialog.ui:96
+msgctxt "shortcut window"
+msgid "Previous Image"
+msgstr "წინა გამოსახულება"
+
+#: data/resources/shortcuts-dialog.ui:102
+msgctxt "shortcut window"
+msgid "First Image"
+msgstr "პირველი გამოსახულება"
+
+#: data/resources/shortcuts-dialog.ui:108
+msgctxt "shortcut window"
+msgid "Last Image"
+msgstr "ბოლო გამოსახულება"
+
+#: data/resources/shortcuts-dialog.ui:116
+msgctxt "shortcut window"
+msgid "Rotate Image"
+msgstr "გამოსახულების შემობრუნება"
+
+#: data/resources/shortcuts-dialog.ui:119
+#: data/resources/shortcuts-dialog.ui:253
+msgctxt "shortcut window"
+msgid "Rotate Clockwise"
+msgstr "საათის ისრის მიმართულებით შებრუნება"
+
+#: data/resources/shortcuts-dialog.ui:125
+#: data/resources/shortcuts-dialog.ui:259
+msgctxt "shortcut window"
+msgid "Rotate Counterclockwise"
+msgstr "საათის ისრის საწინააღმდეგო მიმართულებით შებრუნება"
+
+#: data/resources/shortcuts-dialog.ui:133
+msgctxt "shortcut window"
+msgid "Zoom Image"
+msgstr "გამოსახულების გადიდება"
+
+#: data/resources/shortcuts-dialog.ui:136
+msgctxt "shortcut window"
+msgid "Zoom In"
+msgstr "გადიდება"
+
+#: data/resources/shortcuts-dialog.ui:142
+msgctxt "shortcut window"
+msgid "Zoom Out"
+msgstr "დაპატარავება"
+
+#: data/resources/shortcuts-dialog.ui:148
+msgctxt "shortcut window"
+msgid "Best Fit"
+msgstr "საუკეთესოდ ჩატევა"
+
+#: data/resources/shortcuts-dialog.ui:154
+msgctxt "shortcut window"
+msgid "Original Scale"
+msgstr "საწყისი მასშტაბი"
+
+#: data/resources/shortcuts-dialog.ui:160
+msgctxt "shortcut window"
+msgid "200% Scale"
+msgstr "200% მასშტაბი"
+
+#: data/resources/shortcuts-dialog.ui:168
+msgctxt "shortcut window"
+msgid "Pan View"
+msgstr "პანორამული ხედი"
+
+#: data/resources/shortcuts-dialog.ui:171
+msgctxt "shortcut window"
+msgid "Pan Left"
+msgstr "პანინგი მარცხნივ"
+
+#: data/resources/shortcuts-dialog.ui:177
+msgctxt "shortcut window"
+msgid "Pan Right"
+msgstr "პანინგი მარჯვნივ"
+
+#: data/resources/shortcuts-dialog.ui:183
+msgctxt "shortcut window"
+msgid "Pan Up"
+msgstr "პანორამა მაღლა"
+
+#: data/resources/shortcuts-dialog.ui:189
+msgctxt "shortcut window"
+msgid "Pan Down"
+msgstr "პანორამა დაბლა"
+
+#: data/resources/shortcuts-dialog.ui:197
+msgctxt "shortcut window"
+msgid "View"
+msgstr "ხედი"
+
+#: data/resources/shortcuts-dialog.ui:200
+msgctxt "shortcut window"
+msgid "Toggle Fullscreen"
+msgstr "მთელ ეკრანზე გატანის ჩართ/გამორთ"
+
+#: data/resources/shortcuts-dialog.ui:206
+msgctxt "shortcut window"
+msgid "Leave Fullscreen"
+msgstr "დატოვე მთელს ეკრანზე"
+
+#: data/resources/shortcuts-dialog.ui:212
+msgctxt "shortcut window"
+msgid "Toggle Image Properties"
+msgstr "გამოსახულების თვისებების გადართვა"
+
+#: data/resources/shortcuts-dialog.ui:218
+msgctxt "shortcut window"
+msgid "Show Main Menu"
+msgstr "მთავარი მენიუს ჩვენება"
+
+#: data/resources/shortcuts-dialog.ui:226
+msgctxt "shortcut window"
+msgid "Editing"
+msgstr "ჩასწორება"
+
+#: data/resources/shortcuts-dialog.ui:229
+msgctxt "shortcut window"
+msgid "Open Editing View"
+msgstr "ჩასწორების ხედის გახსნა"
+
+#: data/resources/shortcuts-dialog.ui:235
+msgctxt "shortcut window"
+msgid "Replace Original"
+msgstr "ორიგინალის ჩანაცვლება"
+
+#: data/resources/shortcuts-dialog.ui:241
+msgctxt "shortcut window"
+msgid "Save As"
+msgstr "შენახვა, როგორც"
+
+#: data/resources/shortcuts-dialog.ui:247
+msgctxt "shortcut window"
+msgid "Cancel"
+msgstr "გაუქმება"
+
+#: data/resources/shortcuts-dialog.ui:265
+msgctxt "shortcut window"
+msgid "Mirror Horizontally"
+msgstr "ჰორიზონტალური ანარეკლი"
+
+#: data/resources/shortcuts-dialog.ui:271
+msgctxt "shortcut window"
+msgid "Mirror Vertically"
+msgstr "ვერტიკალურ ანარეკლი"
+
+#: data/resources/shortcuts-dialog.ui:277
+msgctxt "shortcut window"
+msgid "Apply Crop"
+msgstr "კადრირების გამოყენება"
+
+#. Translators: Replace "translator-credits" with your names, one name per line
+#: src/about.rs:45
+msgid "translator-credits"
+msgstr "ვიღაც, ვინც თარგმნა"
+
+#: src/about.rs:46
+msgid "Copyright © 2020–2024 Christopher Davis et al."
+msgstr "Copyright © 2020–2024 Christopher Davis და სხვ."
+
+#: src/file_model.rs:211
+msgid "Could not list other files in directory."
+msgstr "საქაღალდეში სხვა ფაილების სიის გამოტანის შეცდომა."
+
+#. Translators: Display of the f-number <https://en.wikipedia.org/wiki/F-number>. {} will be replaced with the number
+#: src/metadata.rs:271
+msgid "\\u{192}\\u{2215}{}"
+msgstr "\\u{192}\\u{2215}{}"
+
+#. Translators: Fractional exposure time (photography) in seconds
+#: src/metadata.rs:284
+msgid "1\\u{2215}{}\\u{202F}s"
+msgstr "1\\u{2215}{}\\u{202F}წმ"
+
+#. Translators: Exposure time (photography) in seconds
+#: src/metadata.rs:292
+msgid "{}\\u{202F}s"
+msgstr "{}\\u{202F}წმ"
+
+#: src/metadata.rs:306
+msgid "{}\\u{202F}mm"
+msgstr "{}\\u{202F}მმ"
+
+#. Translators: short for "north" in GPS coordinate
+#: src/metadata.rs:396
+msgid "N"
+msgstr "ჩრდ"
+
+#. Translators: short for "south" in GPS coordinate
+#: src/metadata.rs:400
+msgid "S"
+msgstr "სამხ"
+
+#. Translators: short for "east" in GPS coordinate
+#: src/metadata.rs:409
+msgid "E"
+msgstr "მი"
+
+#. Translators: short for "west" in GPS coordinate
+#: src/metadata.rs:413
+msgid "W"
+msgstr "ოთხ"
+
+#: src/metadata.rs:493
+msgid "DCI P3"
+msgstr "DCI P3"
+
+#: src/metadata.rs:494
+msgid "Display P3"
+msgstr "P3-ის ჩვენება"
+
+#: src/metadata.rs:495
+msgid "Rec.2020"
+msgstr "Rec.2020"
+
+#: src/metadata.rs:496
+msgid "sRGB"
+msgstr "sRGB"
+
+#: src/metadata.rs:497 src/metadata.rs:505
+msgid "Unspecified"
+msgstr "მიუთითებელი"
+
+#: src/metadata.rs:498 src/metadata.rs:507 src/metadata.rs:517
+#, rust-format
+msgid "Unknown ({})"
+msgstr "უცნობი ({})"
+
+#: src/metadata.rs:504
+msgid "ICtCp"
+msgstr "ICtCp"
+
+#: src/metadata.rs:513
+msgid "DCI"
+msgstr "DCI"
+
+#: src/metadata.rs:514
+msgid "PQ"
+msgstr "PQ"
+
+#: src/metadata.rs:515
+msgid "Gamma 2.4"
+msgstr "გამა 2.4"
+
+#. / Returns localized date + time format
+#. Translators: This is the date and time format we use in metadata output etc.
+#. The format has to follow <https://docs.gtk.org/glib/method.DateTime.format.html>
+#. The default is already translated. Don't change if you are not sure what to
+#. use.
+#: src/util.rs:39
+msgid "%x %X"
+msgstr "%x %X"
+
+#: src/util.rs:182
+msgid "Failed to restore image from trash"
+msgstr "გამოსახულების ნაგვის ყუთიდან აღდგენის შეცდომა"
+
+#: src/widgets/drag_overlay.ui:15
+msgid "Drop Image to View"
+msgstr "დააგდეთ გამოსახულება სანახავად"
+
+#: src/widgets/edit/crop.rs:363
+msgid "Failed to Edit Image"
+msgstr "გამოსახულების ჩასწორების შეცდომა"
+
+#: src/widgets/edit/crop.ui:6
+msgid "Free"
+msgstr "თავისუფალი"
+
+#: src/widgets/edit/crop.ui:11
+msgid "Original"
+msgstr "ორიგინალი"
+
+#: src/widgets/edit/crop.ui:16
+msgid "Square"
+msgstr "კვადრატი"
+
+#: src/widgets/edit/crop.ui:21
+msgid "5:4"
+msgstr "5:4"
+
+#: src/widgets/edit/crop.ui:26
+msgid "4:3"
+msgstr "4:3"
+
+#: src/widgets/edit/crop.ui:31
+msgid "3:2"
+msgstr "3:2"
+
+#: src/widgets/edit/crop.ui:36
+msgid "16:9"
+msgstr "16:9"
+
+#: src/widgets/edit/crop.ui:77 src/widgets/edit/crop.ui:364
+msgid "Aspect Ratio"
+msgstr "თანაფარდობა"
+
+#: src/widgets/edit/crop.ui:91
+msgid "_Free"
+msgstr "_თავისუფალი"
+
+#: src/widgets/edit/crop.ui:109
+msgid "_Original"
+msgstr "_ორიგინალი"
+
+#: src/widgets/edit/crop.ui:127
+msgid "_Square"
+msgstr "_კვადრატი"
+
+#: src/widgets/edit/crop.ui:145
+msgid "_5:4"
+msgstr "_5:4"
+
+#: src/widgets/edit/crop.ui:166
+msgid "_4:3"
+msgstr "_4:3"
+
+#: src/widgets/edit/crop.ui:187
+msgid "_3:2"
+msgstr "_3:2"
+
+#: src/widgets/edit/crop.ui:208
+msgid "_16:9"
+msgstr "_16:9"
+
+#: src/widgets/edit/crop.ui:231 src/widgets/edit/crop.ui:377
+msgid "Orientation Landscape"
+msgstr "ორიენტაცია ლანდშაფტი"
+
+#: src/widgets/edit/crop.ui:240 src/widgets/edit/crop.ui:389
+msgid "Orientation Portrait"
+msgstr "ორიენტაცია პორტრეტი"
+
+#: src/widgets/edit/crop.ui:252 src/widgets/image_page.ui:15
+#: src/widgets/image_window.ui:25
+msgid "Rotate"
+msgstr "დატრიალება"
+
+#: src/widgets/edit/crop.ui:261 src/widgets/edit/crop.ui:407
+msgid "Rotate Counter Clockwise"
+msgstr "საათის ისრის საწინააღმდეგო მიმართულებით შებრუნება"
+
+#: src/widgets/edit/crop.ui:268
+msgid "Rotate Clockwise"
+msgstr "საათის ისრის მიმართულებით შებრუნება"
+
+#: src/widgets/edit/crop.ui:278
+msgid "Flip"
+msgstr "გადაბრუნება"
+
+#: src/widgets/edit/crop.ui:287 src/widgets/edit/crop.ui:415
+msgid "Mirror Horizontally"
+msgstr "ჰორიზონტალური ანარეკლი"
+
+#: src/widgets/edit/crop.ui:294
+msgid "Mirror Vertically"
+msgstr "ვერტიკალურ ანარეკლი"
+
+#: src/widgets/edit/crop.ui:306 src/widgets/edit/crop.ui:429
+msgid "_Reset"
+msgstr "ჩამოყ_რა"
+
+#: src/widgets/edit/crop.ui:307 src/widgets/edit/crop.ui:431
+msgid "Undo Changes in this View"
+msgstr "ხედის ცვლილებების გაუქმება"
+
+#: src/widgets/edit/crop_selection.ui:46
+msgid "Crop Selection"
+msgstr "მონიშნულის ამოჭრა"
+
+#. Translators: Filename suffix, {} is replaced by a number
+#: src/widgets/edit_window.rs:199
+#, rust-format
+msgid " (Edited)"
+msgid_plural " (Edited {})"
+msgstr[0] " (ჩასწორებულია)"
+msgstr[1] " ({} ჩასწორებულია)"
+
+#: src/widgets/edit_window.rs:283
+msgid "Moving Original to Trash"
+msgstr "ორიგინალის გადატანა ნაგვის ყუთში"
+
+#: src/widgets/edit_window.rs:297 src/widgets/edit_window.rs:326
+msgid "Failed to save image."
+msgstr "გამოსახულების შენახვის შეცდომა."
+
+#: src/widgets/edit_window.rs:306
+msgid "Finalizing Save Operation"
+msgstr "შენახვის ოპერაციის დასრულება"
+
+#: src/widgets/edit_window.rs:357
+msgid "Editing Image"
+msgstr "გამოსახულების ჩასწორება"
+
+#: src/widgets/edit_window.rs:374
+msgid "Failed to edit image."
+msgstr "გამოსახულების ჩასწორების შეცდომა."
+
+#: src/widgets/edit_window.rs:381
+msgid "Saving Image"
+msgstr "გამოსახულების შენახვა"
+
+#: src/widgets/edit_window.rs:400
+msgid "Failed to Save Image"
+msgstr "გამოსახულების შენახვის შეცდომა"
+
+#: src/widgets/edit_window.rs:515
+msgid "Save Changes?"
+msgstr "შევინახო ცვლილებები?"
+
+#: src/widgets/edit_window.rs:517
+msgid ""
+"There are unsaved image editing changes. Closing without saving will "
+"permanently lose these modifications."
+msgstr ""
+"არსებობს შეუნახავი გამოსახულების ჩასწორების ცვლილებები. მათი შენახვის გარეშე "
+"დახურვით ამ ცვლილებებს სამუდამოდ დაკარგავთ."
+
+#: src/widgets/edit_window.rs:521 src/widgets/image_window.rs:700
+msgid "Cancel"
+msgstr "გუქმება"
+
+#: src/widgets/edit_window.rs:522
+msgid "Discard"
+msgstr "მოცილება"
+
+#: src/widgets/edit_window.rs:523
+msgid "Save"
+msgstr "შენახვა"
+
+#: src/widgets/edit_window.ui:64
+msgid "_Cancel"
+msgstr "გაუ_ქმება"
+
+#: src/widgets/edit_window.ui:71
+msgid "_Save"
+msgstr "_შენახვა"
+
+#: src/widgets/edit_window.ui:92
+msgid "_Save As…"
+msgstr "_შენახვა, როგორც…"
+
+#: src/widgets/edit_window.ui:100
+msgid "Keep original and create a new file"
+msgstr "ორიგინალის შენარჩუნება და ახალი ფაილის შექმნა"
+
+#: src/widgets/edit_window.ui:120
+msgid "_Replace Original"
+msgstr "ო_რიგინალის ჩანაცვლება"
+
+#: src/widgets/edit_window.ui:128
+msgid "Original image will be moved to the trash"
+msgstr "ორიგინალი გამოსახულება ნაგვის ყუთში იქნება გადატანილი"
+
+#: src/widgets/error_details.rs:80
+msgid ""
+"The following error occurred. If you think this is an issue with the "
+"program, please include this information when you report the error."
+msgstr ""
+"მოხდა შემდეგი შეცდომა. თუ ფიქრობთ, რომ ეს პრობლემა პროგრამისაა, ჩასვით ეს "
+"ინფორმაცია, როცა შეცდომის შესახებ ანგარიშს მოგვწერთ."
+
+#: src/widgets/error_details.ui:4
+msgid "Error Details"
+msgstr "შეცდომის დეტალები"
+
+#: src/widgets/error_details.ui:19
+msgid ""
+"The image loader reported the following when trying to load or edit the "
+"image. Please include this information when you report an error. If "
+"possible, please also provide the image that causes the issue."
+msgstr ""
+"გამოსახულების ჩამტვირთავმა შემდეგი ინფორმაცია მოგვაწოდა გამოსახულების "
+"ჩატვირთვის მცდელობისას. გთხოვთ, ჩასვით ეს ინფორმაცია, როცა შეცდომის შესახებ "
+"მოგვწერთ."
+
+#: src/widgets/error_details.ui:24
+msgid "Error Message"
+msgstr "შეცდომის შეტყობინება"
+
+#: src/widgets/error_details.ui:28
+msgid "Copy Error Message"
+msgstr "შეცდომის შეტყობინების კოპირება"
+
+#: src/widgets/error_details.ui:68
+msgid "Report _Issue"
+msgstr "_პრობლემის შეტყობინება"
+
+#: src/widgets/image_page.rs:225
+#, rust-format
+msgid ""
+"No image loaders available. Maybe the “glycin-loaders” package with "
+"compatibility version “{}” is not installed."
+msgstr ""
+"გამოსახულების ჩამტვირთავები ხელმისაწვდომი არაა. შეიძლება, პაკეტი \"glycin-"
+"loaders\" თავსებადობის ვერსიით \"{}\" დაყენებული არაა."
+
+#: src/widgets/image_page.rs:243
+#, rust-format
+msgid "The image format “{} ({})” is known but not installed."
+msgstr "ფაილის ფორმატი \"{} ({})\" ცნობილია, მაგრამ დაყენებული არაა."
+
+#: src/widgets/image_page.rs:251
+#, rust-format
+msgid "Unknown image format “{} ({}).”"
+msgstr "გამოსახულების უცნობი ფორმატი “{} ({}).”"
+
+#: src/widgets/image_page.rs:260
+msgid "There is not enough free memory available to load this image."
+msgstr "არასაკმარისი მეხსიერება ამ გამოსახულების ჩასატვირთად."
+
+#: src/widgets/image_page.rs:267
+#, rust-format
+msgid "Failed to load image file: {}"
+msgstr "გამოსახულების ფაილის ჩატვირთვის შეცდომა: {}"
+
+#: src/widgets/image_page.rs:272
+msgid "Either the image file is corrupted or it contains unsupported elements."
+msgstr ""
+"ან გამოსახულების ფაილი დაზიანებულია, ან ის მხარდაუჭერელ ელემენტებს შეიცავს."
+
+#: src/widgets/image_page.ui:6 src/widgets/image_window.ui:16
+msgid "_Open With…"
+msgstr "_გამხსნელი პროგრამა…"
+
+#: src/widgets/image_page.ui:10 src/widgets/image_window.ui:20
+msgid "_Print…"
+msgstr "_ბეჭდვა…"
+
+#: src/widgets/image_page.ui:26 src/widgets/image_window.ui:36
+msgid "_Set as Background…"
+msgstr "ფონად დაყენე_ბა…"
+
+#: src/widgets/image_page.ui:30 src/widgets/image_window.ui:40
+msgid "_Delete"
+msgstr "_წაშლა"
+
+#: src/widgets/image_page.ui:34
+msgid "_Copy"
+msgstr "_კოპირება"
+
+#: src/widgets/image_page.ui:63
+msgid "Could not Load Image"
+msgstr "გამოსახულების ჩატვირთვის შეცდომა"
+
+#: src/widgets/image_page.ui:71
+msgid "More _Information"
+msgstr "მეტი _ინფორმაცია"
+
+#: src/widgets/image_page.ui:81
+msgid "_Reload"
+msgstr "თავიდან ჩატვი_რთვა"
+
+#: src/widgets/image_page.ui:123 src/widgets/image_window.ui:101
+msgid "Rotate Left"
+msgstr "მარცხნივ შებრუნება"
+
+#: src/widgets/image_page.ui:133 src/widgets/image_window.ui:111
+msgid "Rotate Right"
+msgstr "მარჯვნივ შებრუნება"
+
+#. Translators: This is a toast notification, informing the user that
+#. an image has been set as background.
+#: src/widgets/image_view.rs:866
+msgid "Set as background."
+msgstr "ფონად დაყენება."
+
+#: src/widgets/image_view.rs:872
+msgid "Could not set background."
+msgstr "ფონად დაყენების შეცდომა."
+
+#: src/widgets/image_view.ui:26
+msgid "Previous Image"
+msgstr "წინა გამოსახულება"
+
+#: src/widgets/image_view.ui:36
+msgid "Next Image"
+msgstr "შემდეგი გამოსახულება"
+
+#: src/widgets/image_view.ui:66
+msgid "Zoom Out"
+msgstr "დაპატარავება"
+
+#: src/widgets/image_view.ui:77
+msgid "Zoom In"
+msgstr "გადიდება"
+
+#: src/widgets/image_view.ui:92
+msgid "Toggle Zoom"
+msgstr "გადიდების გადართვა"
+
+#: src/widgets/image_view.ui:100
+msgid "Zoom to Specific Level"
+msgstr "გადიდება მითითებულ დონემდე"
+
+#: src/widgets/image_view.ui:229
+msgid "Custom Zoom Level"
+msgstr "მორგებული გადიდების დონე"
+
+#: src/widgets/image_view.ui:235
+msgid "Zoom to Specified Level"
+msgstr "გადიდება მითითებულ დონემდე"
+
+#: src/widgets/image_window.rs:509
+msgid "Supported image formats"
+msgstr "გამოსახულების მხარდაჭერილი ფორმატები"
+
+#: src/widgets/image_window.rs:515
+msgid "All files"
+msgstr "ყველა ფაილი"
+
+#: src/widgets/image_window.rs:522
+msgid "Open Image"
+msgstr "გამოსახულების გახსნა"
+
+#: src/widgets/image_window.rs:614
+msgid "Image copied to clipboard"
+msgstr "სურათი ბუფერში დაკოპირდა"
+
+#: src/widgets/image_window.rs:635
+msgid "Image moved to trash"
+msgstr "სურათი გადატანილია სანაგვე ყუთში"
+
+#: src/widgets/image_window.rs:636
+msgid "Undo"
+msgstr "დაბრუნება"
+
+#: src/widgets/image_window.rs:666
+msgid "Failed to move image to trash"
+msgstr "ფაილების სანაგვე ყუთში გადატანის შეცდომა"
+
+#: src/widgets/image_window.rs:690
+msgid "Permanently Delete Image?"
+msgstr "წავშალო გამოსახულება სამუდამოდ?"
+
+#: src/widgets/image_window.rs:692
+#, rust-format
+msgid "After deleting the image “{}” it will be permanently lost."
+msgstr "გამოსახულება \"{}\", მხოლოდ, სამუდამოდ შეგიძლიათ წაშალოთ."
+
+#: src/widgets/image_window.rs:701
+msgid "Delete"
+msgstr "წაშლა"
+
+#: src/widgets/image_window.rs:712
+msgid "Failed to delete image"
+msgstr "გამოსახულების წაშლის შეცდომა"
+
+#: src/widgets/image_window.ui:6
+msgid "_New Window"
+msgstr "_ახალი ფანჯარა"
+
+#: src/widgets/image_window.ui:10
+msgid "_Open…"
+msgstr "გახსნა…"
+
+#: src/widgets/image_window.ui:46
+msgid "_Help"
+msgstr "_დახმარება"
+
+#: src/widgets/image_window.ui:50
+msgid "_Keyboard Shortcuts"
+msgstr "_კლავიატურის მალსახმობები"
+
+#: src/widgets/image_window.ui:54
+msgid "_About Image Viewer"
+msgstr "სურათების დამთვალიერებლის შესახებ"
+
+#: src/widgets/image_window.ui:87
+msgid "Toggle Fullscreen"
+msgstr "მთელ ეკრანზე გატანის ჩართ/გამორთ"
+
+#: src/widgets/image_window.ui:93
+msgid "Main Menu"
+msgstr "მთავარი მენიუ"
+
+#: src/widgets/image_window.ui:125
+msgid "Image Properties"
+msgstr "გამოსახულების თვისებები"
+
+#: src/widgets/image_window.ui:132
+msgid "Edit Image"
+msgstr "გამოსახულების ჩასწორება"
+
+#: src/widgets/image_window.ui:220
+msgid "View and Edit Images"
+msgstr "სურათების დათვალიერება და ჩასწორება"
+
+#: src/widgets/image_window.ui:221
+msgid "Drag and drop images here"
+msgstr "გადმოათრიეთ და დაყარეთ სურათები აქ"
+
+#: src/widgets/image_window.ui:225
+msgid "_Open Files…"
+msgstr "_ფაილების გახსნა…"
+
+#: src/widgets/print.rs:109
+msgid "Top"
+msgstr "თავში"
+
+#: src/widgets/print.rs:110
+msgid "Center"
+msgstr "ცენტრი"
+
+#: src/widgets/print.rs:111
+msgid "Bottom"
+msgstr "ბოლოში"
+
+#: src/widgets/print.rs:112
+msgid "Left"
+msgstr "მარცხენა"
+
+#: src/widgets/print.rs:113
+msgid "Right"
+msgstr "მარჯვენა"
+
+#. Translators: Shorthand for centimeter
+#: src/widgets/print.rs:149
+msgid "cm"
+msgstr "სმ"
+
+#. Translators: Shorthand for inch
+#: src/widgets/print.rs:151
+msgid "in"
+msgstr "დუიმი"
+
+#. Translators: Shorthand for pixel
+#: src/widgets/print.rs:153
+msgid "px"
+msgstr "px"
+
+#. Translators: {} is a placeholder for the filename
+#: src/widgets/print.rs:366
+#, rust-format
+msgid "Print “{}”"
+msgstr "“{}”-ის დაბეჭდვა"
+
+#: src/widgets/print.rs:473
+msgid "Continue…"
+msgstr "გაგრძელება…"
+
+#: src/widgets/print.rs:474
+msgid "Print Image"
+msgstr "გამოსახულების დაბეჭდვა"
+
+#: src/widgets/print.rs:802
+msgid "_Scale"
+msgstr "გადიდ_ება"
+
+#: src/widgets/print.rs:805
+msgid "_Width"
+msgstr "_სიგანე"
+
+#. Translators: Go back to previous page
+#: src/widgets/print.ui:29
+msgid "_Back"
+msgstr "_უკან"
+
+#: src/widgets/print.ui:37
+msgid "_Print"
+msgstr "_ბეჭდვა"
+
+#: src/widgets/print.ui:56
+msgid "Layout"
+msgstr "განლაგება"
+
+#: src/widgets/print.ui:59
+msgid "_Orientation"
+msgstr "_ორიენტაცია"
+
+#: src/widgets/print.ui:72
+msgid "Portrait Page Orientation"
+msgstr "გვერდის პორტრეტული ორიენტაცია"
+
+#: src/widgets/print.ui:80
+msgid "Landscape Page Orientation"
+msgstr "გვერდის ლანდშაფტური ორიენტაცია"
+
+#: src/widgets/print.ui:89
+msgid "_Alignment"
+msgstr "_სწორება"
+
+#: src/widgets/print.ui:108
+msgid "Margins"
+msgstr "გვერდის ველები"
+
+#: src/widgets/print.ui:111
+msgid "Margin Units"
+msgstr "ზღვრის ზომის ერთეულები"
+
+#: src/widgets/print.ui:128
+msgid "_Horizontal"
+msgstr "_ჰორიზონტალური"
+
+#: src/widgets/print.ui:134
+msgid "_Vertical"
+msgstr "_ვერტიკალური"
+
+#: src/widgets/print.ui:142 src/widgets/properties_view.ui:56
+msgid "Image Size"
+msgstr "გამოსახულების ზომა"
+
+#: src/widgets/print.ui:145
+msgid "Image Size Units"
+msgstr "გამოსახულების ზომის ერთეულები"
+
+#: src/widgets/print.ui:163
+msgid "_Fill Space"
+msgstr "_სივრცის შევსება"
+
+#: src/widgets/print.ui:174
+msgid "H_eight"
+msgstr "სიმაღლ_ე"
+
+#: src/widgets/properties_view.rs:284
+msgid "Unknown"
+msgstr "უცნობი"
+
+#. Translators: Addition of image being transparent to format name
+#: src/widgets/properties_view.rs:288
+msgid ", transparent"
+msgstr ", გამჭვირვალე"
+
+#. Translators: Addition of image being grayscale to format name
+#: src/widgets/properties_view.rs:293
+msgid ", grayscale"
+msgstr ", ნაცრისფერი"
+
+#. Translators: Addition of bit size to format name
+#: src/widgets/properties_view.rs:298
+msgid ", {}\\u{202F}bit"
+msgstr ", {}\\u{202F}ბიტი"
+
+#: src/widgets/properties_view.rs:315
+msgid "{}\\u{202F}\\u{D7}\\u{202F}{}"
+msgstr "{}\\u{202F}\\u{D7}\\u{202F}{}"
+
+#. Translators: Shorthand for centimeter
+#: src/widgets/properties_view.rs:354
+msgid " cm"
+msgstr " სმ"
+
+#. Translators: Shorthand for inch
+#: src/widgets/properties_view.rs:358
+msgid "″"
+msgstr "″"
+
+#. Translators: Shorthand for meter
+#: src/widgets/properties_view.rs:362
+#| msgid "{} %"
+msgid " m"
+msgstr " მ"
+
+#. Translators: Shorthand for millimeter
+#: src/widgets/properties_view.rs:366
+msgid " mm"
+msgstr " მმ"
+
+#. Translators: Shorthand for pica (unit)
+#: src/widgets/properties_view.rs:370
+msgid " pc"
+msgstr " პიკა"
+
+#. Translators: Shorthand for pica (unit)
+#: src/widgets/properties_view.rs:374
+msgid " pt"
+msgstr " წრტ"
+
+#: src/widgets/properties_view.rs:386
+#| msgid "{}\\u{202F}\\u{D7}\\u{202F}{}"
+msgid "{}{}\\u{202F}\\u{D7}\\u{202F}{}{}"
+msgstr "{}{}\\u{202F}\\u{D7}\\u{202F}{}{}"
+
+#: src/widgets/properties_view.rs:403
+#| msgid "{}\\u{202F}s"
+msgid "{}\\u{202F}DPI"
+msgstr "{}\\u{202F}DPI"
+
+#: src/widgets/properties_view.rs:407
+#| msgid "{}\\u{202F}\\u{D7}\\u{202F}{}"
+msgid "{}\\u{202F}DPI\\u{202F}\\u{D7}\\u{202F}{}\\u{202F}DPI"
+msgstr "{}\\u{202F}DPI\\u{202F}\\u{D7}\\u{202F}{}\\u{202F}DPI"
+
+#: src/widgets/properties_view.rs:435
+msgid "Image Coordinates Copied"
+msgstr "გამოსახულების კოორდინატები დაკოპირებულია"
+
+#: src/widgets/properties_view.ui:20
+msgid "Folder"
+msgstr "საქაღალდე"
+
+#: src/widgets/properties_view.ui:28
+msgid "Open Containing Folder"
+msgstr "შემცველი საქაღალდის გახსნა"
+
+#: src/widgets/properties_view.ui:41
+msgid "URI"
+msgstr "URI"
+
+#: src/widgets/properties_view.ui:66
+msgid "Physical Size"
+msgstr "ფიზიკური ზომა"
+
+#: src/widgets/properties_view.ui:76
+msgid "Resolution"
+msgstr "გარჩევადობა"
+
+#: src/widgets/properties_view.ui:86
+msgid "Image Format"
+msgstr "გამოსახულების ფორმატი"
+
+#: src/widgets/properties_view.ui:96
+msgid "File Size"
+msgstr "ფაილის ზომა"
+
+#: src/widgets/properties_view.ui:110
+msgid "File Created"
+msgstr "ფაილი შეიქმნა"
+
+#: src/widgets/properties_view.ui:120
+msgid "File Modified"
+msgstr "შეცვლილი ფაილი"
+
+#. Translators: This is a label for GPS coordinates
+#: src/widgets/properties_view.ui:134
+msgid "Location"
+msgstr "დებარეობა"
+
+#: src/widgets/properties_view.ui:145
+msgid "Copy Coordinates"
+msgstr "კოორდინატების კოპირება"
+
+#: src/widgets/properties_view.ui:156
+msgid "Open Location"
+msgstr "მდებარეობის გახსნა"
+
+#: src/widgets/properties_view.ui:169
+msgid "Originally Created"
+msgstr "თავიდან შეიქმნა"
+
+#: src/widgets/properties_view.ui:179
+msgid "Creator"
+msgstr "შემქმნელი"
+
+#: src/widgets/properties_view.ui:189
+msgid "Copyright"
+msgstr "საავტორო უფლებები"
+
+#: src/widgets/properties_view.ui:199
+msgid "Comment"
+msgstr "კომენტარი"
+
+#: src/widgets/properties_view.ui:209
+msgid "Aperture"
+msgstr "დიაფრაგმის მნიშვნელობა"
+
+#: src/widgets/properties_view.ui:219
+msgid "Exposure"
+msgstr "ექსპოზიცია"
+
+#: src/widgets/properties_view.ui:229
+msgid "ISO"
+msgstr "ISO"
+
+#: src/widgets/properties_view.ui:239
+msgid "Focal Length"
+msgstr "ფოკალური მანძილი"
+
+#: src/widgets/properties_view.ui:249
+msgid "Maker, Model"
+msgstr "მწარმოებელი, მოდელი"
+
+#: src/widgets/properties_view.ui:259
+msgid "Lens"
+msgstr "ლინზა"
+
+#: src/widgets/properties_view.ui:269
+msgid "Software"
+msgstr "პროგრამები"
+
+#: src/widgets/properties_view.ui:279
+msgid "ICC Profile"
+msgstr "ICC პროფილი"
+
+#: src/widgets/properties_view.ui:289
+msgid "CICP"
+msgstr "CICP"
+
+#: src/widgets/window.rs:254
+msgid "Show Details"
+msgstr "დეტალების ჩვენება"
+
+#~ msgid "Browse through your images and inspect their metadata with:"
+#~ msgstr "დაათვალიერეთ თქვენი სურათები და მათი მეტამონაცემები:"
+
+#~ msgid "Fast GPU accelerated image rendering"
+#~ msgstr "GPU-ით აჩქარებული გამოსახულების რენდერი"
+
+#~ msgid "Tiled rendering for vector graphics"
+#~ msgstr "ნაწილ-ნაწილ რენდერი ვექტორული გრაფიკისთვის"
+
+#~ msgid "Extendable and sandboxed image decoding"
+#~ msgstr "გაფართოებადი და სენდბოქსში ჩაკეტილი გამოსახულების დეკოდერი"
+
+#~ msgid "Accessible presentation of the most important metadata."
+#~ msgstr "მნიშვნელოვანი მეტამონაცემების წვდომადი პრეზენტაცია."
+
+#~ msgctxt "shortcut window"
+#~ msgid "Gestures"
+#~ msgstr "ჟესტები"
+
+#~ msgid "Copy to Clipboard"
+#~ msgstr "ბუფერში კოპირება"
+
+#~ msgid "Move to Trash"
+#~ msgstr "სანაგვე ყუთში გადატანა"
+
+#~ msgid "The Loupe Team"
+#~ msgstr "Loupe-ის გუნდი"
+
+#~ msgid "Center image horizontally"
+#~ msgstr "გამოსახულების ჰორიზონტალურად დაცენტრება"
+
+#~ msgid "Center image vertically"
+#~ msgstr "გამოსახულების ვერტიკალურად დაცენტრება"
+
+#~ msgid "Image Scale"
+#~ msgstr "გამოსახულების მასშტაბი"
+
+#~ msgid "Left Margin"
+#~ msgstr "მარცხენა ზღვარი"
+
+#~ msgid "Length Unit"
+#~ msgstr "სიგრძის ერთეული"
+
+#~ msgid "_About Loupe"
+#~ msgstr "Loupe-ის _შესახებ"
+
+#~ msgid "Loupe"
+#~ msgstr "Loupe"
+
+#~ msgid "Failed to decode image"
+#~ msgstr "გამოსახულების გაშიფვრის შეცდომა"
+
+#~ msgid "Unknown image format"
+#~ msgstr "გამოსახულების უცნობი ფორმატი"
+
+#~ msgid "Animated GIF"
+#~ msgstr "ანიმირებული GIF"
+
+#~ msgid "Animated WebP"
+#~ msgstr "ანიმირებული WebP"
+
+#~ msgid "Animated PNG"
+#~ msgstr "ანიმირებული PNG"
+
+#~ msgid "Could not open image"
+#~ msgstr "გამოსახულების გახსნის შეცდომა"
+
+#~ msgid "Could not read image"
+#~ msgstr "გამოსახულების წაკითხვის შეცდომა"
+
+#~ msgid "Layout Image"
+#~ msgstr "გამოსახულების განლაგება"
+
+#~ msgid "The following features are not available yet"
+#~ msgstr "ეს თვისებები ჯერჯერობით მიუწვდომელია"
+
+#~ msgid "Applying image color profiles"
+#~ msgstr "გამოსახულების ფერის პროფილების გადატარება"
+
+#~ msgid "Christopher Davis"
+#~ msgstr "Christopher Davis"
+
+#~ msgid "File does not exist"
+#~ msgstr "ფაილი არ არსებობს"
+
+#~ msgid "Failed to open new background image"
+#~ msgstr "ახალი ფონის სურათის გახსნის შეცდომა"
+
+#~ msgid "“{}” is not a valid image."
+#~ msgstr "“{}” სწორი გამოსახულება არაა."
+
+#~ msgid "Correctly showing SVGs at every zoom-level"
+#~ msgstr "SVG ფაილების სწორად ჩვენება მათი გადიდებისას"
+
+#~ msgid "Correct HighDPI support"
+#~ msgstr "HighDPI-ის სწორი მხარდაჭერა"
+
+#~ msgid "Print settings to position the image on the page"
+#~ msgstr "დაბეჭდვის პარამეტრები გამოსახულების გვერდზე მოსათავსებლად"
+
+#~ msgid "File Type"
+#~ msgstr "ფაილის ტიპი"
