@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Upstream | `main` @ `2593900` |
-| Port | `ruby` @ `f914f87` |
+| Port | `ruby` @ `01ff0bc` (lib/ unchanged since `f914f87`) |
 | Units with parity | 4 / 16 |
 
 Units counted per `component-identification.md`'s 16-unit list. A unit has

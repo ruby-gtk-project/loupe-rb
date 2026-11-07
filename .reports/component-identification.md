@@ -1,7 +1,7 @@
 # Component identification — loupe
 
 Upstream: `origin/main` @ `2593900` ("Release 51.rc"), gnome-loupe, Rust/gtk-rs.
-Port: `ruby` branch @ `f914f87`.
+Port: `ruby` branch @ `01ff0bc` (lib/ unchanged since `f914f87`, the commit this survey was originally checked against).
 
 This repeats and confirms the survey already on file at
 `.reports/component-inventory.md` (written by an earlier pass under the same
