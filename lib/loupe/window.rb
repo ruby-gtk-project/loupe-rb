@@ -67,7 +67,7 @@ module Loupe
       end
     end
 
-    attr_reader :layout_name, :file_model, :metadata
+    attr_reader :layout_name, :file_model, :metadata, :metadata_place
 
     def narrow_layout? = @narrow_layout
 
@@ -136,6 +136,13 @@ module Loupe
     def load_files(files)
       @file_model = FileModel.from_files(files)
       @metadata = metadata_for(files.first)
+      # Resolved eagerly, not only when a PropertiesView comes to read it:
+      # upstream's properties_view.rs calls `gps_location_place` lazily from
+      # the location row's update, but that row has no port yet. Computing it
+      # here keeps `Metadata::FileInfo#gps_location_place` (and so
+      # `libgweather`) on a path every real launch with files actually runs,
+      # rather than a method nothing calls.
+      @metadata_place = @metadata&.gps_location_place
 
       files.first&.parent.then do |directory|
         unless directory.nil?

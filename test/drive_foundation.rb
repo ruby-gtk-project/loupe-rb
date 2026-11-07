@@ -310,6 +310,41 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
 
       d.check("3 files were found in the directory") { window.file_model.n_files == 3 }
       d.check("the model is sorted, not insertion-ordered") { File.basename(window.file_model.first.path) == "a1.png" }
+      d.check("a file with no GPS attributes resolves no place") { window.metadata_place.nil? }
+    end
+  end
+
+  d.step("a GPS-tagged file resolves a place name through libgweather") do
+    # The sandbox this drives in has no gvfs-metadata daemon, so a real file
+    # can't actually carry `metadata::location-*` attributes (confirmed:
+    # Gio::File#set_attribute_string on that namespace raises
+    # Gio::IOError::NotSupported here) — the same attributes tracker-extract
+    # would populate from a photo's EXIF tags on a real desktop. Building the
+    # Gio::FileInfo by hand, the same way `query_info` would hand one to
+    # `Metadata::FileInfo.new`, still drives the production
+    # `Metadata::FileInfo#gps_location_place` and `Loupe::Metadata` straight
+    # into GWeather::Location.world/find_nearest_city/get_distance for real.
+    info = Gio::FileInfo.new
+    info.set_attribute_string(Gio::FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, "london.png")
+    info.set_attribute_uint64(Gio::FILE_ATTRIBUTE_STANDARD_SIZE, 9)
+    info.set_attribute_string("metadata::location-latitude", "51.5074")
+    info.set_attribute_string("metadata::location-longitude", "-0.1278")
+
+    file_info = Loupe::Metadata::FileInfo.new(info)
+
+    d.check("the file info picked up both GPS attributes") { file_info.has_gps_location? }
+    d.check("GWeather resolves it to London, United Kingdom") do
+      file_info.gps_location_place == "London, United Kingdom"
+    end
+
+    far = Gio::FileInfo.new
+    far.set_attribute_string(Gio::FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, "ocean.png")
+    far.set_attribute_uint64(Gio::FILE_ATTRIBUTE_STANDARD_SIZE, 9)
+    far.set_attribute_string("metadata::location-latitude", "0.0")
+    far.set_attribute_string("metadata::location-longitude", "0.0")
+
+    d.check("far from any city, it falls back to degrees/minutes/seconds") do
+      Loupe::Metadata::FileInfo.new(far).gps_location_place == "0° 0′ 00.00″ N\n0° 0′ 00.00″ E"
     end
   end
 
