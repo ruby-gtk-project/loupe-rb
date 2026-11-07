@@ -25,7 +25,6 @@
           libadwaita
           harfbuzz
           librsvg
-          appstream
           libgweather
         ]
         # The Ruby `pkg-config` gem resolves `Requires.private` transitively and

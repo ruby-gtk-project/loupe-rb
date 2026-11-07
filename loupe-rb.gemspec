@@ -103,19 +103,21 @@ Gem::Specification.new do |spec|
   spec.add_dependency("adwaita", "~> 4.3")
   spec.add_dependency("glib2", "~> 4.3")
 
-  # Upstream's AppStream dependency is build-tooling only (CI validates
-  # data/org.gnome.Loupe.metainfo.xml.in.in with appstream-util); Cargo.toml
-  # carries no appstream crate. The gem is wired in anyway, as this fork's
-  # binding-gem mandate requires, and is proved to load in flake.nix's
-  # typelib wiring and the gem-load check below; no component calls into it
-  # because upstream has no runtime use for it either.
-  spec.add_dependency("appstream", "~> 1.0")
+  # Removed: upstream's own AppStream dependency is build-tooling only (CI
+  # validates data/org.gnome.Loupe.metainfo.xml.in.in with appstream-util
+  # in .gitlab-ci.yml); Cargo.toml carries no appstream crate, and grepping
+  # the whole upstream tree for the `AppStream` namespace turns up nothing.
+  # There is no runtime feature in loupe for this gem to back, so unlike
+  # libgweather below it stays out rather than being kept as a declared
+  # dependency nothing calls.
 
   # Upstream's metadata.rs (Metadata#gps_location_place) calls
   # libgweather::Location::world to turn a photo's GPS EXIF coordinates into
   # a "City, Country" string, falling back to the raw coordinates when no
-  # city is within 15km. lib/loupe/metadata.rb ports that with this gem
-  # rather than hand-rolling a location lookup.
+  # city is within 15km. lib/loupe/metadata.rb ports that with this gem,
+  # fed by GIO's own `metadata::location-*` attributes (lib/loupe/metadata/
+  # file.rb) in place of upstream's gufo EXIF parser, which has no Ruby
+  # binding.
   spec.add_dependency("libgweather", "~> 1.0")
 
   # NOTE: It is preferable to list development dependencies in the gemspec due to increased

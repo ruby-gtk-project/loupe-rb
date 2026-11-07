@@ -4,9 +4,6 @@ GEM
     adwaita (4.4.0)
       gtk4 (= 4.4.0)
       rake
-    appstream (1.0.0)
-      gem_kit (~> 0.2)
-      gobject-introspection (~> 4.3)
     atk (4.4.0)
       glib2 (= 4.4.0)
       rake
@@ -63,7 +60,6 @@ PLATFORMS
 
 DEPENDENCIES
   adwaita
-  appstream
   glib2
   gtk4
   libgweather

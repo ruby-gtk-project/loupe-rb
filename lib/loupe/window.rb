@@ -7,6 +7,7 @@ require_relative "about"
 require_relative "config"
 require_relative "error_details"
 require_relative "file_model"
+require_relative "metadata/file"
 require_relative "util"
 require_relative "util/gettext"
 
@@ -66,7 +67,7 @@ module Loupe
       end
     end
 
-    attr_reader :layout_name, :file_model
+    attr_reader :layout_name, :file_model, :metadata
 
     def narrow_layout? = @narrow_layout
 
@@ -134,6 +135,7 @@ module Loupe
     # the details behind it.
     def load_files(files)
       @file_model = FileModel.from_files(files)
+      @metadata = metadata_for(files.first)
 
       files.first&.parent.then do |directory|
         unless directory.nil?
@@ -234,6 +236,18 @@ module Loupe
           error.message,
           :general,
         )
+      end
+
+      # The file-system facts plus (via `Metadata::FileInfo#gps_location_place`,
+      # which calls into `libgweather`) the GPS place name, for the
+      # PropertiesView a future round will port. A query failure is logged
+      # rather than shown as a toast: upstream treats missing metadata as
+      # absent fields, not as an error worth interrupting the viewer for.
+      def metadata_for(file)
+        file.nil? ? nil : Metadata::FileInfo.new_for_file(file)
+      rescue GLib::Error => error
+        warn("Could not read file metadata: #{error.message}")
+        nil
       end
 
       def breakpoint(condition, name, narrow)
