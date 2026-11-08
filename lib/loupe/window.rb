@@ -5,9 +5,12 @@ require "adwaita"
 
 require_relative "about"
 require_relative "config"
+require_relative "decoder"
 require_relative "error_details"
 require_relative "file_model"
 require_relative "metadata/file"
+require_relative "properties_view"
+require_relative "settings"
 require_relative "util"
 require_relative "util/gettext"
 
@@ -97,6 +100,8 @@ module Loupe
 
         install_window_actions
 
+        self.show_properties = settings.show_properties?
+
         # Limit the effect of modal dialogs to this window and keep the
         # others usable.
         Gtk::WindowGroup.new.add_window(self)
@@ -144,6 +149,8 @@ module Loupe
       # rather than a method nothing calls.
       @metadata_place = @metadata&.gps_location_place
 
+      properties_view.set_target(files.first, @metadata, decode_for_properties(files.first))
+
       files.first&.parent.then do |directory|
         unless directory.nil?
           load_directory(directory)
@@ -151,6 +158,20 @@ module Loupe
       end
 
       @file_model
+    end
+
+    # Upstream's win.toggle-properties action (F9 / Alt+Return), bound to
+    # the overlay split view the image page now wraps the (not yet ported)
+    # image surface in.
+    def toggle_properties
+      self.show_properties = !show_properties?
+    end
+
+    def show_properties? = image_split_view.show_sidebar?
+
+    def show_properties=(value)
+      image_split_view.show_sidebar = value
+      settings.show_properties = value
     end
 
     # The LpEditWindow upstream puts into the second stack page, or nil while
@@ -207,14 +228,34 @@ module Loupe
       end
     end
 
-    def image_page = @image_page ||= Adwaita::Bin.new
+    def image_page = @image_page ||= Adwaita::Bin.new.tap { |bin| bin.child = image_split_view }
     def edit_page = @edit_page ||= Adwaita::Bin.new
+
+    # Wraps the (not yet ported) image surface in the properties sidebar
+    # upstream's image_window.rs toggles with F9/Alt+Return. The image
+    # side stays an empty Bin until image.rb/image_view.rb/image_page.rb
+    # land; the sidebar itself (properties_view.rb) is fully ported.
+    def image_split_view
+      @image_split_view ||= Adwaita::OverlaySplitView.new.tap do |split|
+        split.sidebar_position = :end
+        split.sidebar = properties_view
+        split.content = image_content
+      end
+    end
+
+    def image_content = @image_content ||= Adwaita::Bin.new
+
+    def properties_view = @properties_view ||= PropertiesView.new.tap(&:build)
+
+    def settings = @settings ||= Settings.new
 
     # Only the shortcut is added here: the app.shortcuts action itself is
     # registered by the application, as upstream relies on libadwaita doing.
     def shortcut_controller
       @shortcut_controller ||= Gtk::ShortcutController.new.tap do |controller|
         controller.add_shortcut(shortcuts_dialog_shortcut)
+        controller.add_shortcut(toggle_properties_f9_shortcut)
+        controller.add_shortcut(toggle_properties_alt_return_shortcut)
       end
     end
 
@@ -222,6 +263,22 @@ module Loupe
       Gtk::Shortcut.new(
         Gtk::KeyvalTrigger.new(Gdk::Keyval::KEY_question, Gdk::ModifierType::CONTROL_MASK),
         Gtk::NamedAction.new("app.shortcuts"),
+      )
+    end
+
+    # Upstream's Action::ToggleProperties accelerators: F9 with no
+    # modifier, or Alt+Return.
+    def toggle_properties_f9_shortcut
+      Gtk::Shortcut.new(
+        Gtk::KeyvalTrigger.new(Gdk::Keyval::KEY_F9, Gdk::ModifierType::new(0)),
+        Gtk::NamedAction.new("win.toggle-properties"),
+      )
+    end
+
+    def toggle_properties_alt_return_shortcut
+      Gtk::Shortcut.new(
+        Gtk::KeyvalTrigger.new(Gdk::Keyval::KEY_Return, Gdk::ModifierType::ALT_MASK),
+        Gtk::NamedAction.new("win.toggle-properties"),
       )
     end
 
@@ -246,8 +303,8 @@ module Loupe
       end
 
       # The file-system facts plus (via `Metadata::FileInfo#gps_location_place`,
-      # which calls into `libgweather`) the GPS place name, for the
-      # PropertiesView a future round will port. A query failure is logged
+      # which calls into `libgweather`) the GPS place name, fed straight
+      # into properties_view.rb's sidebar. A query failure is logged
       # rather than shown as a toast: upstream treats missing metadata as
       # absent fields, not as an error worth interrupting the viewer for.
       def metadata_for(file)
@@ -255,6 +312,17 @@ module Loupe
       rescue GLib::Error => error
         warn("Could not read file metadata: #{error.message}")
         nil
+      end
+
+      # Feeds the PropertiesView its pixel size. The real image surface
+      # (image.rb, not yet ported) will decode once and share its
+      # pixbuf/texture with every widget that needs it; until then this
+      # is a second, separate decode of the same file. Decoder#load
+      # already turns a decode failure into a nil pixbuf rather than an
+      # exception, which here just costs the properties sidebar its size
+      # row, not the view itself.
+      def decode_for_properties(file)
+        file.nil? ? nil : Decoder.load(file).pixbuf
       end
 
       def breakpoint(condition, name, narrow)
@@ -271,6 +339,14 @@ module Loupe
       def install_window_actions
         WINDOW_ACTIONS.each_key do |name|
           add_action(error_details_action(name))
+        end
+
+        add_action(toggle_properties_action)
+      end
+
+      def toggle_properties_action
+        Gio::SimpleAction.new("toggle-properties").tap do |action|
+          action.signal_connect("activate") { toggle_properties }
         end
       end
 

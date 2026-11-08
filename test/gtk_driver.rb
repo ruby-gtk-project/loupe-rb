@@ -57,6 +57,7 @@ module GtkDriver
       @failed_checks = []
       @errored_steps = []
       @window_block = nil
+      @covered = []
     end
 
     # --- Registered from inside the block ---------------------------------
@@ -72,6 +73,16 @@ module GtkDriver
     end
 
     # --- Called from inside a step ----------------------------------------
+
+    # Declares which lib files (paths relative to the app's lib/<app> dir,
+    # e.g. "window.rb") the step calling this actually exercised. The
+    # "components covered" figure `report` prints at the end is the size
+    # of the union of every call to this across the run — a number this
+    # script computes and can reproduce itself, rather than one a reader
+    # has to take on faith.
+    def covers(*paths)
+      @covered.concat(paths.map(&:to_s))
+    end
 
     # Records a pass/fail. Prefer several small checks over one big one: when
     # something breaks you want to know which part.
@@ -201,6 +212,10 @@ module GtkDriver
         puts
         if @checks.positive?
           puts "#{@checks - @failed_checks.length} of #{@checks} checks passed"
+        end
+        unless @covered.empty?
+          covered = @covered.uniq.sort
+          puts "covering #{covered.length} components: #{covered.join(', ')}"
         end
         @failed_checks.each { |check| puts "  failed check: #{check}" }
         @errored_steps.each { |step| puts "  errored step: #{step}" }

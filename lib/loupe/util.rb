@@ -52,6 +52,26 @@ module Loupe
       end
     end
 
+    # Decimal (1000-based) byte count, matching the units GLib's own
+    # g_format_size uses: upstream's `metadata.file_size()` formats
+    # through glib::format_size, which the Ruby GLib bindings do not
+    # expose, so the same decimal-prefix table is reproduced here.
+    FILE_SIZE_UNITS = %w[B kB MB GB TB PB].freeze
+
+    def format_size(bytes)
+      if bytes <= 0
+        "0 #{FILE_SIZE_UNITS[0]}"
+      else
+        magnitude = [(Math.log(bytes, 1000)).floor, FILE_SIZE_UNITS.length - 1].min
+        value = bytes.to_f / (1000**magnitude)
+        if magnitude.zero?
+          "#{bytes} #{FILE_SIZE_UNITS[0]}"
+        else
+          format("%<value>.1f %<unit>s", value: value, unit: FILE_SIZE_UNITS[magnitude])
+        end
+      end
+    end
+
     def file_display_name(file)
       query_attributes(file, [Gio::FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME]).display_name
     rescue GLib::Error

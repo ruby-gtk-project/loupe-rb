@@ -14,10 +14,15 @@
 #
 # This exercises every unit `.reports/component-parity.md` counts as built:
 # the window shell, the error-details dialog, the drag overlay, the about
-# dialog, the shortcuts window, the shy bin and the GdkPixbuf-backed decoder
-# model. It does not and cannot exercise the image viewer, editor, crop tool,
-# properties sidebar or print page, because none of those have a port file
-# yet (see that report) — there is nothing to drive.
+# dialog, the shortcuts window, the shy bin, the GdkPixbuf-backed decoder
+# model and (new this round) the properties sidebar. It does not and cannot
+# exercise the image viewer, editor or crop tool, because none of those have
+# a port file yet (see that report) — there is nothing to drive.
+#
+# Each step calls `d.covers(...)` naming the lib files its checks actually
+# exercise. The final report sums the union of every call into a "covering
+# N components" line — a number this script computes from its own steps,
+# not one a reader has to take on faith.
 
 require "cairo"
 require "fileutils"
@@ -63,6 +68,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   d.window { app.app.active_window }
 
   d.step("support modules need no window") do
+    d.covers("config.rb", "style.rb", "util.rb", "util/gettext.rb", "settings.rb", "file_model.rb")
+
     d.check("config data dir ships") { Dir.exist?(Loupe::Config.data_dir) }
     d.check("stylesheet ships") { File.exist?(Loupe::Style.stylesheet) }
 
@@ -137,6 +144,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("the window is up, with the icon theme loaded") do
+    d.covers("window.rb")
+
     d.check("window exists and is presented") { !app.app.active_window.nil? && app.app.active_window.visible? }
 
     d.check("custom symbolic icons resolve by name") do
@@ -178,6 +187,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("show_edit and show_image switch pages") do
+    d.covers("window.rb")
+
     window = app.app.active_window
     window.show_edit
 
@@ -195,6 +206,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("a plain toast") do
+    d.covers("window.rb")
+
     app.app.active_window.show_toast("hello", :normal)
     d.check("a toast was added without raising") { true }
     pump(200)
@@ -202,6 +215,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("show_error posts a toast carrying the details") do
+    d.covers("window.rb")
+
     app.app.active_window.show_error("Could not load image", "the long version", :loader)
     d.check("the error toast was added without raising") { true }
     pump(200)
@@ -209,6 +224,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("win.show-error opens the general error-details dialog") do
+    d.covers("window.rb", "error_details.rb")
+
     window = app.app.active_window
     window.activate_action("show-error", GLib::Variant.new("general details"))
 
@@ -225,6 +242,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("win.show-loader-error opens the loader error-details dialog") do
+    d.covers("window.rb", "error_details.rb")
+
     window = app.app.active_window
     window.activate_action("show-loader-error", GLib::Variant.new("loader details"))
 
@@ -240,6 +259,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("ErrorDetails.show builds both error-type variants directly") do
+    d.covers("error_details.rb")
+
     Loupe::ErrorDetails.show(app.app.active_window, "loader blew up", :loader).then do |dialog|
       d.check("loader dialog shows the glycin issue uri") { dialog.issue_uri == "https://gitlab.gnome.org/GNOME/glycin/-/issues" }
       d.check("loader dialog carries the message") { dialog.message_view.buffer.text == "loader blew up" }
@@ -256,6 +277,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("app.shortcuts opens the shortcuts dialog with every section and item") do
+    d.covers("window.rb", "shortcuts_dialog.rb")
+
     window = app.app.active_window
     app.app.activate_action("shortcuts", nil)
 
@@ -274,6 +297,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("app.about opens the about dialog with debug info") do
+    d.covers("window.rb", "about.rb", "config.rb")
+
     window = app.app.active_window
     window.show_about
 
@@ -291,6 +316,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("the drag overlay crossfades on a live drop target") do
+    d.covers("drag_overlay.rb")
+
     target = Gtk::DropTarget.new(Gio::File.gtype, :copy)
     overlay = Loupe::DragOverlay.new(target).tap(&:build)
     overlay.content = Gtk::Label.new("content")
@@ -301,6 +328,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("Util::Root reaches the window from a widget deep in the tree") do
+    d.covers("util/root.rb", "window.rb")
+
     window = app.app.active_window
     label = Gtk::Label.new("x")
     window.image_page.child = label
@@ -317,6 +346,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("opening files builds a sorted file model on the window") do
+    d.covers("window.rb", "file_model.rb", "metadata.rb", "metadata/file.rb", "decoder.rb", "properties_view.rb")
+
     window = app.app.active_window
 
     Dir.mktmpdir do |dir|
@@ -329,7 +360,50 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
     end
   end
 
+  d.step("the properties sidebar shows a real image's metadata") do
+    d.covers("window.rb", "properties_view.rb", "decoder.rb", "metadata/file.rb", "settings.rb")
+
+    window = app.app.active_window
+
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "photo.png")
+      real_png(path, width: 33, height: 17)
+
+      window.show_properties = true
+      window.load_files([Gio::File.new_for_path(path)])
+      properties = window.properties_view
+
+      d.check("F9 and the toggle-properties action agree with show_properties?") do
+        window.show_properties?
+      end
+      d.check("the overlay split view's sidebar is actually shown") { window.image_split_view.show_sidebar? }
+      d.check("the sidebar is the PropertiesView") { window.image_split_view.sidebar.equal?(properties) }
+      d.check("the folder row shows a real display name, not the fallback") do
+        properties.folder_row.visible? && properties.folder_row.subtitle != Loupe::PropertiesView::FALLBACK
+      end
+      d.check("the image size row shows the real decoded dimensions") do
+        properties.image_size_row.visible? && properties.image_size_row.subtitle.include?("33") &&
+          properties.image_size_row.subtitle.include?("17")
+      end
+      d.check("the file size row has a real value") { properties.file_size_row.visible? }
+      d.check("the dates group is shown") { properties.dates_group.visible? }
+      d.check("the location row is hidden with no GPS data") { !properties.location_row.visible? }
+
+      pump(200)
+
+      window.toggle_properties
+
+      d.check("win.toggle-properties flips show_properties?") { !window.show_properties? }
+
+      window.toggle_properties
+
+      d.check("toggling twice is back to shown") { window.show_properties? }
+    end
+  end
+
   d.step("a GPS-tagged file resolves a place name through libgweather") do
+    d.covers("metadata.rb", "metadata/file.rb")
+
     # The sandbox this drives in has no gvfs-metadata daemon, so a real file
     # can't actually carry `metadata::location-*` attributes (confirmed:
     # Gio::File#set_attribute_string on that namespace raises
@@ -364,6 +438,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("ShyBin clamps its child's natural width to its minimum width") do
+    d.covers("shy_bin.rb")
+
     bin = Loupe::ShyBin.new
     label = Gtk::Label.new("A very very very very very very long title")
     label.ellipsize = :end
@@ -383,6 +459,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("Decoder decodes a real PNG through GdkPixbuf") do
+    d.covers("decoder.rb")
+
     Dir.mktmpdir do |dir|
       path = File.join(dir, "photo.png")
       real_png(path, width: 37, height: 21)
@@ -399,6 +477,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("Decoder classifies a missing file and an unrecognised format") do
+    d.covers("decoder.rb")
+
     Dir.mktmpdir do |dir|
       missing = Gio::File.new_for_path(File.join(dir, "does-not-exist.png"))
       missing_decoder = Loupe::Decoder.load(missing)
@@ -420,6 +500,8 @@ GtkDriver.drive(Loupe::Application.new, shots: SHOTS) do |d, app|
   end
 
   d.step("Decoder.svg? matches both SVG MIME variants Formats.svg? is for") do
+    d.covers("decoder/formats.rb")
+
     d.check("plain SVG matches") { Loupe::Decoder::Formats.svg?("image/svg+xml") }
     d.check("compressed SVG matches") { Loupe::Decoder::Formats.svg?("image/svg+xml-compressed") }
     d.check("a raster type does not match") { !Loupe::Decoder::Formats.svg?("image/png") }
