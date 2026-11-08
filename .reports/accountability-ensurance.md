@@ -5,182 +5,143 @@
 ```
 grep -rniE 'TODO|FIXME|not implemented|for now|in a future|not yet|placeholder|stub' lib/ exe/ .reports/
 bash .claude/skills/accountability-ensurance/scripts/find-excuses.sh . --quiet
+find . -iname PORTING.md
 ```
 
-No `PORTING.md` exists in this port (confirmed: `find . -iname PORTING.md`
-returns nothing), so there is no document of that name to hold the kind of
-laundered "Dropped deliberately" section the skill's `console-rb` example
-warns about. That is not a point in the port's favor by itself — it just
-means the risk this skill exists for is currently sitting in a different
-place: the runtime-gate claim handed to this audit, two commit messages, and
-— new this round — a directory of files that looks like finished work
-without being opened.
+`PORTING.md` still does not exist on this branch, unchanged across every
+pass of this audit.
 
-## Finding 1 — the drive gate's check count now reproduces; its "components" count still does not, and the same pattern repeated across rounds (most serious)
+## Finding 1 — the drive gate's "components" clause has now been wrong in three consecutive rounds, with three different numbers (most serious, unresolved for a third round)
 
-**Updated this round.** The previous pass of this report flagged "43 checks
-passed... 13 components" as unreproducible against `test/drive_foundation.rb`
-(27-28 actual check sites). This round's task states the gate as
-**"drive_ok=true, 50 checks passed, 0 failed, covering 5 components."**
-Re-run directly in this audit:
+This round's task states the gate as **"drive_ok=true, 69 checks passed, 0
+failed, covering 12 components."** Re-run directly in this audit:
 
 ```
 $ nix develop --command xvfb-run -a ruby test/drive_foundation.rb
 ...
-50 of 50 checks passed
+69 of 69 checks passed
 DRIVE OK
 ```
 
-The **check count now reproduces exactly** — 50/50, matching the gate. This
-is a genuine improvement: `test/gtk_driver.rb` plus the rewritten
-`drive_foundation.rb` (added since the previous pass) grew real coverage
-from 27 to 50 checks, and whoever wrote the gate this time used the actual
-script output.
+The **check count reproduces exactly** again — 69/69, matching the gate,
+continuing the trend of the check-count half being taken from real script
+output each round (43→50→69, each one verified reproducible in its own
+round's audit).
 
-The **"5 components" clause still does not reproduce**, and in exactly the
-same way as last round's "13 components" did not. The script's own section
-banners are `[0]` through `[13]` (14 sections), and reading which port files
-each section exercises names at least nine distinct files/modules —
-`config.rb`, `style.rb`, `util/gettext.rb`, `settings.rb`, `file_model.rb`,
-`window.rb`, `error_details.rb`, `shortcuts_dialog.rb`, `about.rb`,
-`drag_overlay.rb`, `util/root.rb` — not 5, by any grouping found in the repo.
-No comment, report, or script output anywhere in this tree produces 5 as a
-count of anything related to this drive run. **The specific wrong number
-changed from 43/13 to 50/5, but the failure mode — a "components covered"
-figure attached to a gate with no traceable source — is identical across
-both rounds.** That recurrence is itself worth flagging: the check-count half
-of the gate is now taken seriously enough to get fixed, but the
-component-count half is still being asserted rather than computed, two
-rounds in a row.
+The **"components" clause still does not reproduce**, for the third round
+running:
 
-Separately, and more importantly than the arithmetic: **even at 50/50
-exactly reproduced, it is still a false impression of the app's state**,
-because every one of those 50 checks — by direct reading of
-`drive_foundation.rb` — exercises only the ~30% of the app that
-`component-parity.md` finds already built (window chrome, two dialogs, the
-shortcuts window, settings, file-model, gettext util). Not one check opens
-an image, zooms it, pans it, rotates it, crops it, prints it, or shows its
-EXIF data, because none of that code exists (`component-identification.md`:
-11 of 16 units have no port file). Reporting a drive gate as "passed" without
-also reporting what fraction of the app it reaches is exactly the mechanism
-this skill exists to catch: a true, narrow number read as a broad claim.
+| Round | Gate claimed | Script's own section banners | Distinct files/modules a plain reading finds |
+|---|---|---|---|
+| 1 | "43 checks... 13 components" | fewer sections, didn't reproduce at all | — |
+| 2 | "50 checks... 5 components" | `[0]`–`[13]` (14 sections) | 9+ files |
+| 3 (this round) | "69 checks... 12 components" | `[0]`–`[18]` (19 sections) | 14 files: `config.rb`, `style.rb`, `util/gettext.rb`, `settings.rb`, `window.rb`, `error_details.rb`, `shortcuts_dialog.rb`, `about.rb`, `drag_overlay.rb`, `util/root.rb`, `file_model.rb`, `metadata.rb`, `shy_bin.rb`, `decoder.rb` |
 
-## Finding 2 — commit `f914f87` overclaims in its subject line
+No comment, report, script output, or grouping rule anywhere in this
+repository produces 12 as a count of anything connected to this drive run,
+the same as 5 didn't reproduce last round and 13 didn't the round before
+that. **The specific wrong number keeps changing (13 → 5 → 12) while the
+underlying failure — a "components covered" figure attached to the gate
+with no traceable source in the repo — repeats unchanged for a third
+consecutive round.** The check-count half of the gate got fixed between
+round 1 and round 2 and has stayed fixed since; the component-count half
+has never once been sourced, across three rounds of this exact finding
+being raised. That is itself the finding worth escalating: a true number
+(the check count) keeps arriving attached to a number that still isn't
+computed from anything in this repo, and nothing between rounds has closed
+that gap even though the check-count half demonstrably can be fixed.
 
-Subject: **"Wire appstream and libgweather, port metadata/file.rb."**
-"Wire" is a false claim for `appstream`: the commit's own body admits
-`appstream has no caller yet` — the gem is added to the Gemfile and proved to
-load (`AppStream.constants.size == 97`) but nothing in `lib/` ever requires
-or calls it. A gem added to a lockfile and never required by the app it was
-added to is not "wired"; it is unused, and the subject line should say so.
-The body is otherwise honest and should be the template for how this gets
-said: *"appstream has no caller yet... there is nothing in loupe itself for
-the gem to back"* is a plain statement of what's missing, not a decision
-dressed up as one. The subject line, read on its own in `git log --oneline`
-(as this audit initially did), is the part that misleads.
+Separately, and as in every previous round: **even at 69/69 exactly
+reproduced, the gate is still a narrow number read as a broad claim.**
+`component-parity.md` finds 5 of 16 widget units with real parity and 9 of
+16 with no port file at all; not one of the drive script's 19 sections
+opens, zooms, pans, rotates, crops, prints, or inspects an image through a
+properties sidebar, because none of those widgets exist. Five new sections
+landed this round (`[13]`–`[17]`, covering GPS lookup, ShyBin, and the
+decoder) and all five are real, behaviour-driving checks, not padding — see
+`test-parity.md` for the detail — but they extend coverage within the
+support layer, not into the 9 unbuilt widget units.
 
-The body is also honest about the larger gap it leaves: *"the rest of
-`src/metadata.rs` depends on EXIF/XMP parsing (gufo) and image/profile
-details (glycin, moxcms) with no Ruby binding, so it is not ported this
-round."* That is a real binding limitation, correctly scoped as a reason the
-gap is *hard*, not a reason it is *closed* — it does not claim `metadata.rb`
-exists, and `component-identification.md` confirms it does not. This
-sentence is the port being honest about a real gap, not an excuse pattern,
-and is not counted against the port below.
+## Finding 2 — the previous round's `appstream` overclaim is now fixed; recorded here for continuity, not as a new finding
 
-## Finding 3 — commit `80c5bb6` adds a `po/` directory that looks like translation parity and is not (new this round, serious)
-
-Commit `80c5bb6` ("Port desktop/metainfo/service data files, app icons, and
-help/po catalogues") adds `po/*.po` for 58 languages plus `po/POTFILES.in`.
-Checked in this pass: every `.po` file is a **byte-identical copy of
-upstream's catalogue** (`diff <(git show origin/main:po/de.po) po/de.po`
-produces no output), including upstream's own `#:` source-location comments
-pointing at `src/widgets/window.ui` and other paths that do not exist on
-this branch. `po/POTFILES.in` lists this port's `lib/loupe/*.rb` files as
-the extraction source, but grepping those files finds **zero**
-`_()`/`N_()`/`ngettext` call sites outside `util/gettext.rb`'s own
-definitions — confirmed independently in `translation-parity.md`. Running
-`xgettext` against `POTFILES.in` today would extract nothing; the 58 files
-are translations of upstream strings that no file this port actually ships
-contains.
-
-This is worse than the gap it replaces. A missing `po/` directory (the
-previous round's state) cannot be mistaken for coverage. A `po/` directory
-containing 58 real, correctly-formatted, upstream-identical catalogue files
-can — and will, to anyone who runs `ls po/ | wc -l` or `find . -name
-'*.po'` as a parity check without opening a single file to see whether its
-msgids still correspond to anything the port marks. The commit's own
-message ("Port... help/po catalogues") uses "port" for a verbatim copy-paste
-with no port-side wiring, the same overclaiming pattern Finding 2 above
-flags in `f914f87`'s "Wire appstream."
-
-## Finding 4 — `find-excuses.sh` hits, read by hand
+The previous round flagged commit `f914f87`'s subject ("Wire appstream and
+libgweather...") for claiming "wire" on a dependency the commit's own body
+admitted had no caller. Checked in this pass: the gemspec no longer lists
+`appstream` as a dependency at all —
 
 ```
-.reports/component-inventory.md:31:n/a:...
-.reports/component-inventory.md:112:out of scope:...
-.reports/component-inventory.md:114:Out of scope:...
-.reports/component-inventory.md:137:unported:...
+$ grep -n 'appstream\|AppStream' loupe-rb.gemspec lib/**/*.rb
+loupe-rb.gemspec:  # Removed: upstream's own AppStream dependency is build-tooling only (CI
 ```
 
-All four hits are inside the *survey* document itself, not inside `lib/` or
-`exe/`. Read in context:
+— and the comment explains why it was dropped rather than wired. This is
+the overclaim being resolved the honest way (removing the unused
+dependency and saying so) rather than papered over. Not carried forward as
+an open finding.
 
-- Line 31 ("n/a") is the inventory's own table marking `.desktop.in.in` as
-  `n/a` under the "Exists?" column for a packaging file, with the kind
-  column already `service/data` and the row explicitly saying "packaging,
-  not app code" — a correct classification of a non-component, not an
-  excuse for skipping a component. Not a finding.
-- Lines 112/114 ("out of scope") head the inventory's "Out of scope for this
-  port" section, which explains *why* `meson.build`, CI files, `help/` and
-  `news.d/` are not application components — build/release tooling, not
-  user-facing behavior. This is the one place "out of scope" is actually
-  legitimate: these are not features upstream ships to a user, they are the
-  packaging upstream uses to ship it. Not a finding.
-- Line 137 ("unported") is the inventory's summary sentence: *"what exists
-  today is the app chrome... but no image is actually decoded, rendered,
-  zoomed, printed, edited, or inspected yet — that is all of upstream's
-  actual purpose as an image viewer, and it is entirely unported."* This is
-  the opposite of the failure mode the skill targets — it is the clearest,
-  most blunt admission of the gap in the whole repo, not a note that
-  launders it. Not a finding; if anything this sentence is the model for
-  what Finding 1 and 2 above are asking for elsewhere.
+## Finding 3 — the `po/` directory false-green artifact from the previous round is unchanged, neither worse nor fixed
 
-**No excuse-pattern hit in this repo survives being read in context.** The
-survey document this port already carries is unusually direct about the
-size of the remaining gap, and nothing in `lib/` or `exe/` contains a
-`TODO`, `FIXME`, "not implemented", "for now" or "in a future" marker at all
-— the grep for those literal strings returned zero hits outside of
-docstring prose unrelated to deferred work (`gettext.rb`'s comments about
-*how* placeholder substitution works, `window.rb`'s `stub` parameter name in
-`show_error`, which is a variable name, not an admission).
+Commit `80c5bb6`'s 58 byte-identical, upstream-sourced `.po` files remain on
+the branch, still pointed at `lib/loupe/*.rb` via `po/POTFILES.in`, still
+disconnected from the port's actual strings in the way the last round
+found (`diff <(git show origin/main:po/de.po) po/de.po` is still empty —
+confirmed again in this pass). What changed this round is that the port
+now genuinely marks 13 strings for translation (see
+`translation-parity.md`), which makes the gap between "po/ looks like
+58-language coverage" and "the port actually has 13/230 strings marked, in
+a form the po/POTFILES.in-driven extraction tooling can't even see" more
+specific than last round's blanket zero, but no less misleading to a
+reviewer who counts files instead of opening them. Not escalated further
+since the artifact itself hasn't changed, but not resolved either —
+carried forward.
+
+## Finding 4 — `find-excuses.sh` hits, read by hand, same result as every previous round
+
+```
+.reports/component-inventory.md, .reports/accountability-ensurance.md, .reports/translation-parity.md
+```
+
+are the only files the script's literal-string scan touches; every hit is
+inside this audit's own report documents, quoting or summarizing prior
+findings, not inside `lib/` or `exe/`. Read in context, each one is either
+a correct "out of scope" classification of non-application packaging files
+or this report's own summary language — not an excuse for skipped
+application code. **No excuse-pattern hit survives being read in context,
+for the third round running.** `grep -rniE 'TODO|FIXME|not implemented|for
+now|in a future|not yet|placeholder|stub' lib/ exe/` returns zero matches
+outside two non-substantive hits already dismissed in the previous round
+(`window.rb`'s `stub` parameter name — a variable name, not an admission —
+and `gettext.rb`'s prose about placeholder *substitution*, which is what
+the file's job is, not a note about deferred work).
 
 ## What this report is not saying
 
-It is not saying the port is close to done — `component-identification.md`
-and `component-parity.md` say the opposite, in detail. It is saying that
-the gap is no longer only sitting in a gate number external to the repo (as
-the previous round found) — this round, one commit (`80c5bb6`) planted a
-false-looking-green artifact *inside* the repo itself: a `po/` directory
-that passes any shallow "does translation coverage exist" check while being
-disconnected from the port's actual strings. That is a step in the wrong
-direction from the previous round's finding that nothing in `lib/`/`exe/`
-contained excuse language.
+It is not saying the port is close to done. `component-identification.md`
+and `component-parity.md` say the opposite in detail: 9 of 16 widget units
+still have no file, and the app's core reason for existing (viewing,
+zooming, panning, rotating, cropping, printing, inspecting an image)
+remains entirely unbuilt behind a window shell with two empty slots. It is
+saying that, within the narrower scope this skill audits — excuse language
+in the shipped code, and gate numbers that do or don't reproduce — one
+long-standing overclaim (`appstream`) got fixed outright, one false-green
+artifact (`po/`) is unchanged, and one specific recurring failure (the
+drive gate's "components" count) has now failed to reproduce in three
+consecutive rounds with three different wrong numbers, which is worse as a
+pattern than any single round's wrong number on its own: it means the gap
+between "checks passed" and "components covered" is being re-asserted each
+round rather than computed once and fixed.
 
 ## Verdict
 
-**Not clean, and one of the three new/updated findings got worse, not
-better, since the last pass.** The check-count half of the drive gate is now
-reproducible (Finding 1, improved), but its "components" clause is still an
-unsourced number, the same failure repeating with different digits. The
-`f914f87` commit-subject overclaim stands as previously found (Finding 2).
-New and most serious this round: commit `80c5bb6` adds a `po/` directory
-that is a byte-for-byte copy of upstream's 58 catalogues pointed at
-`lib/loupe/*.rb` files containing zero gettext call sites — a translation
-artifact that *looks* like coverage to anyone who counts files instead of
-opening them (Finding 3). `find-excuses.sh` still finds nothing live in
-`lib/`/`exe/` beyond the inventory's own blunt, non-laundering admissions
-(Finding 4). The accountability risk is shifting from "a narrow true number
-read as a broad claim" toward "an artifact that reads as parity until
-someone diffs it against upstream" — a more serious failure mode because it
-survives a shallower check.
+**Not clean.** Finding 1 (the drive gate's unsourced "components" clause)
+is unresolved for a third consecutive round and is the most serious open
+item — not because 12 is a large error, but because the same category of
+unsourced claim has now survived three rounds of being flagged without
+being fixed, while the check-count half of the same gate demonstrably
+*has* been fixed twice over the same period. Finding 2 (`appstream`) is
+resolved. Finding 3 (`po/`) is unchanged, neither better nor worse.
+Finding 4 (`lib/`/`exe/` excuse language) remains clean, as in every prior
+round. The real, narrow improvements this round — shy_bin's faithful port,
+the decoder's honestly-scoped simplification, 13 real strings now wired to
+gettext — are genuine and are credited in the other four reports; none of
+them touch the one finding that has now recurred three times running.

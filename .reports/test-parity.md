@@ -3,15 +3,15 @@
 | | |
 |---|---|
 | Upstream | `main` @ `2593900` |
-| Port | `ruby` @ `01ff0bc` |
+| Port | `ruby` @ `4fb8595` |
 | Upstream tests | 0 |
 | Ported | 0 |
 | Gaps | 0 |
 | Test command | (none — see below) |
 
-## Upstream has no test suite
+## Upstream still has no test suite
 
-Verified directly against `origin/main` in a detached worktree:
+Re-confirmed directly against `origin/main` in this pass:
 
 ```
 $ grep -rln '#\[test\]|#\[gtk::test\]|#\[tokio::test\]|mod tests|cfg(test)' src/
@@ -20,97 +20,92 @@ $ find . -iname '*test*' -not -path './.git/*'
 (no matches)
 ```
 
-No `tests/` directory, no `#[test]` function anywhere in `src/`, no
-`[[test]]` in `Cargo.toml`, no test target in `meson.build`. The census
-script (`.claude/skills/test-parity/scripts/test-census.sh`) run against the
-worktree returns zero rows, agreeing with the direct grep.
+Unchanged from every previous pass. Parity is **0/0, met trivially**: the
+port inherits no safety net because upstream pinned nothing down as worth
+testing.
 
-Parity is **0/0 and is met trivially.** Per the skill's own worked case for
-this situation (GNOME Tour): **the port therefore inherits no safety net.**
-Nothing upstream pinned down as worth testing exists to be dropped, and
-nothing in this report should be read as the port having "passed" a suite —
-there is no suite to pass or fail against.
-
-## What the port has instead, and why it is `## Extra`, not parity
-
-Since the previous pass of this report, two commits
-(`Give the dev shell a display...` already in, plus the test-harness work
-landing as `test/gtk_driver.rb` and a rewritten `test/drive_foundation.rb`)
-added a reusable "drive a real running main loop" harness and grew the
-foundation driver from 27 checks to 50. Re-run directly in this audit:
+## This round's runtime gate — reproduces exactly on check count, still doesn't on "components"
 
 ```
 $ nix develop --command xvfb-run -a ruby test/drive_foundation.rb
 ...
-50 of 50 checks passed
+69 of 69 checks passed
 DRIVE OK
 ```
 
-**Reproduces exactly**: 50 checks, 0 failures, matching the runtime gate
-handed to this audit (`drive_ok=true, 50 checks passed, 0 failed`) — this
-number, unlike the previous round's "43 checks... 13 components", is now
-directly reproducible from the repo's own script. Good.
+**Reproduces exactly** against this round's stated gate
+(`drive_ok=true, 69 checks passed, 0 failed, covering 12 components`) on
+the check count: 69/69, 0 failures, same as the gate claims. This is up
+from 50/50 last round — `drive_foundation.rb` grew five new sections
+(`[13]`–`[17]`) covering the GPS-place lookup (`metadata.rb`), `ShyBin`, and
+the new `Decoder`.
 
-The gate's **"covering 5 components" clause does not reproduce.** The
-driver's own section banners (`[0]` through `[13]`, printed by the script
-itself) name at least nine distinct port files under test — `config.rb`,
-`style.rb`, `util/gettext.rb`, `settings.rb`, `file_model.rb`, `window.rb`,
-`error_details.rb`, `shortcuts_dialog.rb`, `about.rb`, `drag_overlay.rb`,
-plus `util/root.rb`'s mixin — not 5. No grouping in the script, the test
-files, or any report on disk produces 5 as a count of anything. Whatever
-"5 components" is meant to mean, it is not sourced from this repo either;
-see `accountability-ensurance.md`, which flags this as the same
-unreproducible-number pattern as last round's "13 components," just with a
-new number.
+**The "12 components" clause still does not reproduce — same unsourced
+pattern as the previous two rounds, now with a third different number.**
+The script's own section banners run `[0]` through `[18]` (19 sections).
+Reading which port files/modules each section actually exercises names at
+least these distinct units: `config.rb`, `style.rb`, `util/gettext.rb`,
+`settings.rb`, `window.rb`, `error_details.rb`, `shortcuts_dialog.rb`,
+`about.rb`, `drag_overlay.rb`, `util/root.rb`, `file_model.rb`,
+`metadata.rb`, `shy_bin.rb`, `decoder.rb` — **14**, not 12, by the most
+natural "one row per file touched" grouping, and no comment, script output,
+or report anywhere in this tree produces 12 by any other grouping either.
+Last round's gate said "50 checks... 5 components" against 9+ files touched;
+this round says "69 checks... 12 components" against 14 files touched. The
+specific wrong number keeps changing; the pattern — a "components covered"
+figure with no traceable source in the repo — has now repeated identically
+across three consecutive rounds. See `accountability-ensurance.md`.
 
-- `spec/` — **still contains zero `*_spec.rb` files**, unchanged from the
-  previous pass. `spec/spec_helper.rb` and `spec/README.md` set up the
-  `kettle-test`/RSpec harness, but no spec exists for it to run. `bundle exec
-  rspec` would report "0 examples, 0 failures" and that is not evidence of
-  anything passing.
+- `spec/` — **still zero `*_spec.rb` files.** `find spec -type f` returns
+  only `spec_helper.rb` and `README.md`, unchanged since the first pass.
+  `bundle exec rspec` would report "0 examples, 0 failures." That is still
+  not evidence of anything passing, and the dev shell's own banner
+  (`run the specs: ruby -e 'require "rspec/core"; ...'`) advertises a
+  command that currently runs nothing.
 
-Both are extras by the skill's own definition ("extra Ruby tests with no
-upstream counterpart... listed in `## Extra`, outside the count") — upstream
-owes the port nothing here, so 0/0 stands regardless of how large or small
-`drive_foundation.rb` is.
+Both the drive script and the empty spec/ directory are extras by the
+skill's definition — upstream owes the port no tests, so 0/0 stands
+regardless of how large `drive_foundation.rb` grows.
 
-## The real finding: coverage, not count
+## The real finding: coverage, not count — 5 new checks closed real gaps, the shape of the gap is otherwise unchanged
 
-Because upstream has no tests, the only safety net the port has is whatever
-it wrote for itself, and that net is **extremely narrow relative to the
-app**. Every one of `drive_foundation.rb`'s 50 checks exercises the support
-layer and window chrome described in `component-identification.md`'s
-"already ported" column:
+The five new sections (`[13]`–`[17]`) are not padding: they exercise real,
+previously-untested behaviour —
 
-- config/style/gettext/util helpers (8 checks)
-- settings round-trip, file-model navigation (2 checks)
-- window layout state, stack page switching, toasts (6 checks)
-- the two dialogs that exist (error details, about), the shortcuts dialog,
-  the drag overlay (6 checks)
-- icon theme resolution, `Util::Root` plumbing, opened-files-to-file-model
-  (5 checks)
+- `[13]` drives an actual GPS-tagged file through `GWeather::Location.world`
+  and checks the resolved place name, plus the far-from-any-city
+  degrees/minutes/seconds fallback.
+- `[14]` builds a real `ShyBin` with a real label child and checks the
+  measure-clamp numerically on both axes.
+- `[15]`–`[17]` decode a real PNG through `GdkPixbuf::PixbufLoader`, and
+  separately drive a missing file and unreadable image data through the
+  same decoder to check both error-classification branches.
 
-**Not one check touches image loading, decoding, rendering, zooming,
-panning, rotating, cropping, printing, or metadata/EXIF display** — because,
-per `component-identification.md`, none of that code exists yet to check.
-"50 checks passed, 0 failed, 5 components" is a true statement about the
-check count and a false impression about both "5 components" (see above) and
-the whole of the app if read as a release gate. A component no check
-exercises is unverified, not done, and 11 of the app's 16 units (per
-`component-parity.md`) are in exactly that state — not merely untested, but
-with no file for a test to even import.
+None of this is a check that merely imports a file and asserts it loaded;
+each one drives real behaviour through a real code path. That is a
+genuine, material improvement in what the driver actually proves, on top of
+last round's genuine improvement in reproducibility.
+
+But the coverage gap `component-parity.md` identifies is otherwise
+unchanged in shape: **not one check in the driver opens an image in an
+image-viewing widget, zooms it, pans it, rotates it, crops it, prints it, or
+shows it in a properties sidebar** — because, per `component-identification`
+and `component-parity`, none of those 9 widget units exist yet to check.
+The new decoder checks prove a pixbuf can be produced; nothing anywhere in
+the driver or the port hands that pixbuf to a widget that displays it.
 
 ## Verdict
 
-0/0 against upstream, met trivially, **no inherited safety net**. The port's
-own 50-check driver is real, currently green, and reproduces exactly from
-`nix develop --command xvfb-run -a ruby test/drive_foundation.rb` — a genuine
-improvement in reproducibility over the previous round's unverifiable "43
-checks / 13 components." But it is still scoped entirely to the ~30% of the
-app that has been written (window chrome, two dialogs, settings, file model,
-support helpers), and a green run of it proves nothing about the ~70% that
-has not — image loading, rendering, zoom/pan/rotate, crop, print, EXIF/XMP
-metadata. Treat "the drive gate passed" and "the test suite is healthy" as
-two different, mostly unrelated claims; only the first is currently true,
-and the gate's own "5 components" clause is itself unverified against the
-repo (see `accountability-ensurance.md`).
+0/0 against upstream, met trivially, no inherited safety net — unchanged.
+The port's own driver grew honestly this round: 69/69 checks, reproducing
+the gate's check-count exactly, and the five new checks exercise real
+behaviour rather than padding the count. But the gate's "12 components"
+clause is, for the third round running, an unsourced number — 14 files are
+touched by the 19 sections the script itself prints, not 12, by any
+grouping this audit could find in the repo. And the driver's actual reach
+is still bounded to the ~35–40% of the app that has a file at all
+(`component-parity.md`: 5/16 full-parity units, 9/16 with no file); the
+other ~60% — image rendering, zoom, pan, rotate, crop, print, properties —
+remains exactly as untested as before, because it remains unbuilt. `spec/`
+is still empty and the dev shell's advertised RSpec command still runs zero
+examples.

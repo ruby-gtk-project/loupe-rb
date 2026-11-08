@@ -3,75 +3,64 @@
 | | |
 |---|---|
 | Upstream | `main` @ `2593900` |
-| Port | `ruby` @ `01ff0bc` (lib/ unchanged since `f914f87`) |
-| Units with parity | 4 / 16 |
+| Port | `ruby` @ `4fb8595` |
+| Units with parity | 5 / 16 |
 
-Units counted per `component-identification.md`'s 16-unit list. A unit has
-parity only when every row in its table says `parity` (all four axes: count,
-CSS, behaviour, text) — one gap in a unit fails the whole unit, per the
-skill's rule.
+Units counted per `component-identification.md`'s 16-unit list, same rule as
+last pass: a unit has parity only when every row in its table says `parity`
+on all four axes (count, CSS, behaviour, text) — one gap fails the whole
+unit.
 
-## Unit: shortcuts window — `data/resources/shortcuts-dialog.ui` → `lib/loupe/shortcuts_dialog.rb`
+## Units unchanged since the last pass (still parity)
 
-`drive_foundation.rb` asserts `SECTIONS.length == 7` and the sum of item
-counts `== 40`. Upstream's `.ui` has 7 `<shortcuts-group>`/section blocks.
-Not independently re-counted item-by-item in this pass; treated as **parity**
-on the strength of the existing driver assertion plus a visual read of both
-`.ui` and the Ruby `SECTIONS` table, which line up section-for-section.
+- **shortcuts window** — `drive_foundation.rb` section `[8]` asserts 7
+  sections / 40 items, matching upstream's `.ui`. **parity.**
+- **error details dialog** — section `[5]`–`[7]` assert both issue-tracker
+  URIs (loupe/glycin) and the description text. **parity.**
+- **drag overlay** — section `[10]` asserts css-name `lpdragoverlay` and the
+  reveal states. **parity.**
+- **about dialog** — section `[9]` asserts version, debug-info first line,
+  two developers. Still not diffed literal-for-literal against upstream's
+  `.rs` developer list in this pass either — same caveat as last round,
+  carried forward rather than silently dropped.
 
-**parity.**
-
-## Unit: error details dialog — `widgets/error_details.rs`+`.ui` → `lib/loupe/error_details.rb`
-
-| Widget | Up × | Port × | CSS | Signals | Text | Verdict |
-|---|---:|---:|---|---|:-:|---|
-| `Adw.AlertDialog` (subclass) | 1 | 1 | — | — | — | parity |
-| issue-tracker link (`:loader` → glycin, `:general` → loupe) | 2 states | 2 states | — | — | ✓ (driver asserts both URIs) | parity |
-| message view (`description_group`) | 1 | 1 | — | — | ✓ (`GENERAL_DESCRIPTION` asserted) | parity |
-
-**parity**, on the strength of the driver's two checks (`loader error details
-point at glycin`, `general error details point at loupe`). No independent
-screenshot was taken in this pass (see "What was not verified" below).
-
-## Unit: drag overlay — `widgets/drag_overlay.rs`+`.ui` → `lib/loupe/drag_overlay.rb`
+## Unit: shy bin — `widgets/shy_bin.rs` → `lib/loupe/shy_bin.rb` — **new this round, parity**
 
 | Widget | Up × | Port × | CSS | Signals | Text | Verdict |
 |---|---:|---:|---|---|:-:|---|
-| root bin, css-name `lpdragoverlay` | 1 | 1 | ✓ css-name confirmed by driver | — | — | parity |
-| `Gtk.Revealer` | 1 | 1 | — | — | — | parity |
+| `Adw.Bin` subclass, layout manager removed, hexpand | 1 | 1 | — | — | — | parity |
+| `measure` clamps natural width to minimum (horizontal only) | 1 | 1 | — | ✓ (driver asserts numerically) | — | parity |
+| `size_allocate` passes through to child | 1 | 1 | — | ✓ | — | parity |
 
-**parity**, on the strength of `drive_foundation.rb`'s css-name and
-reveal-state assertions.
+Diffed directly against `src/widgets/shy_bin.rs` (read in full for this
+pass): the Ruby's `virtual_do_measure`/`virtual_do_size_allocate` match the
+Rust `measure`/`size_allocate` overrides line for line in behaviour.
+`drive_foundation.rb` section `[14]` builds a real label child and checks
+the clamp numerically (natural width reduced to minimum, vertical axis
+untouched). **parity** — the strongest-verified unit in the port, including
+a behavioural (not just shape) check.
 
-## Unit: about dialog — `about.rs` → `lib/loupe/about.rb`
+## Unit: main window shell — unchanged verdict, still a gap
 
-Driver asserts `version`, `debug_info` first line, `developers.length == 2`.
-Not compared against upstream's actual developer list or `metainfo.xml.in.in`
-release-notes content in this pass — **flagged, not verified** (see below);
-provisionally counted as the 4th parity unit on the strength of the shape
-matching, but this is the weakest of the four passes and should be redone
-against the upstream `.rs` literal developer list before being relied on.
+Same finding as last pass: the `Gtk.Stack`'s two pages
+(`image_page`/`edit_page`) are present as slots the driver can read
+`.stack.visible_child` from, but neither slot holds the widget it stands in
+for — there is still no `ImagePage` or `EditWindow` class anywhere in the
+port. **gap**, unchanged.
 
-## Unit: main window shell — `widgets/window.rs`+`.ui` → `lib/loupe/window.rb`
+## Unit: properties/metadata sidebar — unchanged verdict, still a gap, slightly more model behind it
 
-| Widget | Up × | Port × | CSS | Signals | Text | Verdict |
-|---|---:|---:|---|---|:-:|---|
-| `Adw.ApplicationWindow` | 1 | 1 | — | ✓ breakpoints | — | parity |
-| `Adw.ToastOverlay` | 1 | 1 | — | ✓ | — | parity |
-| `Gtk.Stack` with `image_page` / `edit_page` | 2 pages | 2 pages | — | ✓ switch | — | **gap** |
+`lib/loupe/metadata.rb` (new since last pass) now covers the GPS-place
+slice of `src/metadata.rs` and is verified live in `drive_foundation.rb`
+section `[13]` against both a GPS-tagged file (resolves to "London, United
+Kingdom") and a far-from-any-city fallback (degrees/minutes/seconds). That
+is real, checked behaviour — but it is model, not the widget. There is
+still no `properties_view.rb`, so there is still no sidebar a user can open
+to see it, EXIF/camera/color-profile fields are still entirely absent, and
+the unit as a whole — "properties/metadata sidebar" — still has no widget.
+**gap**, unchanged in verdict though the model behind it grew.
 
-The stack's two pages exist as *something* the driver can call
-`.stack.visible_child` on and get a truthy comparison from, but neither page
-is the upstream widget it stands in for: `window.image_page` is not an
-`ImagePage` (no such class exists in the port — see
-`component-identification.md`), and `window.edit_window` is asserted `.nil?`
-at startup and never becomes non-nil anywhere in the port, because
-`EditWindow` does not exist either. The window shell "has parity" only in the
-sense that it holds two slots; what goes in each slot is the next 11 units,
-all of them gaps. **gap**, scoped to this: the window shell is the one part
-of the app with no image-viewing content behind it.
-
-## Units: everything else (11 of 16) — **no port file, total gap**
+## Units: everything else (9 of 16) — still no port file, total gap
 
 | Unit | Upstream file(s) | Verdict |
 |---|---|---|
@@ -79,53 +68,40 @@ of the app with no image-viewing content behind it.
 | edit window | `widgets/edit_window.rs`+`.ui` | **gap** — no file |
 | per-image page | `widgets/image_page.rs`+`.ui` | **gap** — no file |
 | image+zoom host | `widgets/image_view.rs`+`.ui` | **gap** — no file |
-| the GL image surface | `widgets/image.rs` + 12 submodules | **gap** — no file; nothing in the port renders, zooms, pans or rotates an image |
+| the GL image surface | `widgets/image.rs` + 12 submodules | **gap** — no file; decoder.rb (new) feeds a pixbuf to nothing, since no image-rendering widget exists to receive it |
 | sliding view | `widgets/sliding_view.rs` | **gap** — no file |
-| shy bin | `widgets/shy_bin.rs` | **gap** — no file |
-| properties/metadata sidebar | `widgets/properties_view.rs`+`.ui`, `src/metadata.rs` | **gap** — `properties_view.rb` absent; `metadata.rb` (EXIF/GPS/color model) absent; only the filesystem-attribute slice (`metadata/file.rb`) exists |
 | print settings page | `widgets/print.rs`+`.ui` | **gap** — no file |
 | crop toolbar | `widgets/edit/crop.rs`+`.ui` | **gap** — no file |
 | crop-rectangle overlay | `widgets/edit/crop_selection.rs`+`.ui` | **gap** — no file |
 
-For every row in this table: no widget count, no CSS class, no signal, no
-action, no string has a port counterpart to compare, because there is no file
-to open. These are not "behaviour not yet wired" gaps of the kind the
-`component-parity` skill distinguishes from missing widgets — they are
-missing widgets.
+## Stylesheet axis — still not independently diffed
 
-## Stylesheet axis
+`data/resources/style.css`/`edit.css`/`edit_crop.css` → `lib/loupe/style.rb`.
+Unchanged from last pass: confirmed present and loading, not diffed
+class-for-class. `edit.css`/`edit_crop.css` still style widgets
+(`edit/crop.ui`, `edit/crop_selection.ui`) that do not exist in the port.
 
-`data/resources/style.css`, `edit.css`, `edit_crop.css` upstream →
-`lib/loupe/style.rb` in the port (confirmed present by
-`drive_foundation.rb`'s `stylesheet ships` check, which only proves the file
-exists and loads, not that its rules match upstream's three files
-class-for-class). **Not independently diffed in this pass** — flagged as
-unverified rather than asserted either way. Given that `edit.css` and
-`edit_crop.css` style widgets (`edit/crop.ui`, `edit/crop_selection.ui`) that
-do not exist in the port at all, at minimum the rules those two upstream
-files define have no widget in the port to attach to yet, whether or not the
-port's `style.rb` carries their text.
+## What was not verified in this pass
 
-## What was not verified in this pass, and should not be read as passed
-
-- No screenshot comparison was taken (the `ruby-gtk-testing` skill's Step 4
-  tool). Every "parity" verdict above rests on `drive_foundation.rb`'s
-  assertions plus a source read, not on a rendered comparison.
-- The about dialog's developer list and the window's accelerator table were
-  not diffed literal-for-literal against upstream's `.rs` source.
-- No `component-scan.sh`/`gir-symbols.sh` run was performed (it requires a
-  GObject-Introspection-equipped environment per unit, which this pass did
-  not build); the counts above come from reading the five existing port
-  files directly, which is reliable for 5 files but is not the scripted,
-  symbol-table-backed scan the skill specifies as the primary method.
+- No independent screenshot comparison against upstream renders (the driver
+  takes screenshots into `tmp/shots/`, confirmed present for all 9 states it
+  covers, but nothing in this pass or the repo compares them pixel-for-pixel
+  against a reference render of upstream).
+- About dialog's developer list / window accelerator table: still not
+  diffed literal-for-literal against the `.rs` source, same gap as last
+  round.
+- No `component-scan.sh`/`gir-symbols.sh` scripted run; this pass again
+  reads the port files directly plus the driver's assertions.
 
 ## Verdict
 
-**4 of 16 units have component parity** (shortcuts window, error details,
-drag overlay, about dialog — the last with a caveat above), one unit (window
-shell) is a gap scoped to "holds nothing yet", and 11 units are a total gap
-with no port file at all. This is not a port with component parity by any
-reading of the skill's bar: "for every component the original builds, the
-port builds one that is the same on all four axes" fails outright for 12 of
-16 units, and the remaining 4 were checked against driver assertions, not an
-independent render.
+**5 of 16 units have component parity** (shortcuts window, error details,
+drag overlay, about dialog, and — new this round — shy bin), up from 4.
+The window shell remains a gap scoped to "holds nothing yet" and the
+properties/metadata unit remains a gap with more model behind it than last
+round but still no widget. **9 of 16 units are a total gap with no port
+file at all.** The core verdict from the last pass is unchanged: this is not
+a port with component parity by the skill's bar — the image-viewing,
+editing, cropping and printing surface that is the actual reason the app
+exists has gained one piece of supporting infrastructure (a decoder that
+feeds nothing) but not one visible widget.
