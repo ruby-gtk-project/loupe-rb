@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "rb/version"
-
 # The part of Loupe that loads without a display.
 #
 # This file exists because `require "gtk4"` initialises GTK at require time
@@ -22,3 +20,4 @@ require_relative "util/gettext"
 require_relative "config"
 require_relative "settings"
 require_relative "decoder/formats"
+require_relative "rb/version"
